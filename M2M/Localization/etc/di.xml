@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Sales\Block\Adminhtml\Order\Create\Form\Address">
+        <plugin name="setAdditionalFormElementRenderers" type="Isobar\Localization\Plugin\Sales\Block\Adminhtml\Order\Create\Form\Address" disabled="false" sortOrder="10"></plugin>
+    </type>
+    <type name="Magento\Customer\Model\Metadata\AddressMetadata">
+        <plugin name="resortAttribute" type="Isobar\Localization\Plugin\Customer\Model\Metadata\AddressMetadata"></plugin>
+    </type>
+    <type name="Magento\Customer\Model\Attribute">
+        <plugin name="saveRelateAttribute" type="Isobar\Localization\Plugin\Customer\Model\Attribute"></plugin>
+    </type>
+    <type name="Magento\Directory\Model\ResourceModel\Country\Collection">
+        <plugin name="set_default_label" type="Isobar\Localization\Plugin\Directory\Model\ResourceModel\Country\Collection" disabled="false" sortOrder="10"></plugin>
+    </type>
+    <type name="Magento\Directory\Model\ResourceModel\Region\Collection">
+        <plugin name="sortOptionByValue" type="Isobar\Localization\Plugin\Directory\Model\ResourceModel\Region\Collection" disabled="false" sortOrder="10"></plugin>
+    </type>
+
+</config>

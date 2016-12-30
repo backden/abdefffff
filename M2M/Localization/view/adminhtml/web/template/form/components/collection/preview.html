@@ -1,0 +1,42 @@
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<address>
+    <each args="{
+        data: formatPreviews([
+            'prefix firstname middlename lastname firstname_katakana lastname_katakana suffix',
+            'company',
+            'street',
+            {
+                items: 'district_id_input district_id city_id_input city_id region_id_input region_id postcode',
+                separator: ', '
+            },
+            'country_id',
+            {
+                items: 'telephone',
+                prefix: 'T: '
+            },
+            {
+                items: 'fax',
+                prefix: 'F: '
+            },
+            {
+                items: 'vat_id',
+                prefix: 'VAT: '
+            }
+        ]),
+        as: '$preview'}"
+    >
+
+        <if args="$parent.hasPreview($preview)">
+            <span text="$parent.buildPreview($preview)"/><br>
+        </if>
+    </each>
+
+    <if args="noPreview">
+        <span text="label"/><br />
+    </if>
+</address>

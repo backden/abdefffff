@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+  <body>
+    <referenceBlock name="checkout.root">
+      <arguments>
+        <argument name="jsLayout" xsi:type="array">
+          <item name="components" xsi:type="array">
+            <item name="checkout" xsi:type="array">
+              <item name="children" xsi:type="array">
+                <item name="steps" xsi:type="array">
+                  <item name="children" xsi:type="array">
+                    <item name="shipping-step" xsi:type="array">
+                      <item name="children" xsi:type="array">
+                        <item name="shippingAddress" xsi:type="array">
+                          <item name="children" xsi:type="array">
+                            <item name="shipping-address-fieldset" xsi:type="array">
+                              <item name="children" xsi:type="array">
+                                <item name="city" xsi:type="array">
+                                  <item name="visible" xsi:type="boolean">false</item>
+                                </item>
+                                <item name="city_id_input" xsi:type="array">
+                                  <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                                  <item name="deps" xsi:type="string"><![CDATA[${ $.provider }:${ $.parentScope }.city_id]]></item>
+                                </item>
+                                <item name="city_id" xsi:type="array">
+                                  <item name="component" xsi:type="string">Isobar_Localization/js/form/element/city</item>
+                                  <item name="config" xsi:type="array">
+                                    <item name="template" xsi:type="string">ui/form/field</item>
+                                    <item name="elementTmpl" xsi:type="string">ui/form/element/select</item>
+                                    <item name="customEntry" xsi:type="string">shippingAddress.city</item>
+                                  </item>
+                                  <item name="filterBy" xsi:type="array">
+                                    <item name="target" xsi:type="string"><![CDATA[${ $.provider }:${ $.parentScope }.region_id]]></item>
+                                    <item name="field" xsi:type="string">region_id</item>
+                                  </item>
+                                </item>
+                                <item name="district" xsi:type="array">
+                                  <item name="visible" xsi:type="boolean">false</item>
+                                </item>
+                                <item name="district_id" xsi:type="array">
+                                  <item name="component" xsi:type="string">Isobar_Localization/js/form/element/district</item>
+                                  <item name="config" xsi:type="array">
+                                    <item name="template" xsi:type="string">ui/form/field</item>
+                                    <item name="elementTmpl" xsi:type="string">ui/form/element/select</item>
+                                    <item name="customEntry" xsi:type="string">shippingAddress.district</item>
+                                  </item>
+                                  <item name="filterBy" xsi:type="array">
+                                    <item name="target" xsi:type="string"><![CDATA[${ $.provider }:${ $.parentScope }.city_id]]></item>
+                                    <item name="field" xsi:type="string">city_id</item>
+                                  </item>
+                                </item>
+                                <item name="district_id_input" xsi:type="array">
+                                  <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                                  <item name="deps" xsi:type="string"><![CDATA[${ $.provider }:${ $.parentScope }.district_id]]></item>
+                                </item>
+                              </item>
+                            </item>
+                            <item name="fixbug-field-wrong-position" xsi:type="array">
+                              <item name="children" xsi:type="array">
+                                <item name="shipping_policy" xsi:type="array">
+                                  <item name="component" xsi:type="string">Isobar_Localization/js/view/extend-component</item>
+                                  <item name="provider" xsi:type="string">checkoutProvider</item>
+                                </item>
+                              </item>
+                            </item>
+                          </item>
+                        </item>
+                      </item>
+                    </item>
+                  </item>
+                </item>
+              </item>
+            </item>
+          </item>
+        </argument>
+      </arguments>
+    </referenceBlock>
+  </body>
+</page>
