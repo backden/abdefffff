@@ -1,0 +1,22 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <import>
+            <product>
+                <source_path><![CDATA[var/xml_import/product]]></source_path>
+                <auto_import>false</auto_import>
+            </product>
+            <stock>
+                <source_path><![CDATA[var/csv_import/stock]]></source_path>
+                <auto_import>false</auto_import>
+            </stock>
+            <attribute>
+                <source_path><![CDATA[var/xml_import/attribute]]></source_path>
+                <auto_import>false</auto_import>
+            </attribute>
+            <store>
+                <source_path><![CDATA[var/xml_import/physical_store]]></source_path>
+                <auto_import>false</auto_import>
+            </store>
+        </import>
+    </default>
+</config>

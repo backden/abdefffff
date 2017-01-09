@@ -1,0 +1,24 @@
+<div data-bind="visible: showTotalProgress()">
+    <div>
+        <span data-bind="text: uploadSpeedFormatted()"></span>
+        <span data-bind="text: timeRemainingFormatted()" style="float: right;"></span>
+    </div>
+    <div class="uploadfile-totalprogress">
+        <div class="uploadfile-totalprogressbar" style="width: 0%;"
+             data-bind="style: { width: totalProgress() + '%' }"></div>
+    </div>
+</div>
+<div data-bind="foreach: uploads">
+    <div class="uploadfile-upload" data-bind="css: { 'uploadfile-uploadcompleted': uploadCompleted() }">
+        <div class="uploadfile-fileinfo">
+            <strong data-bind="text: fileName"></strong>
+            <span data-bind="text: fileSizeFormated"></span>
+            <span class="uploadfile-progresspct" data-bind="visible: uploadProgress() < 100"><span
+                    data-bind="text: uploadSpeedFormatted()"></span></span>
+        </div>
+        <div class="uploadfile-progress">
+            <div class="uploadfile-progressbar" style="width: 0%;"
+                 data-bind="style: { width: uploadProgress() + '%' }"></div>
+        </div>
+    </div>
+</div>

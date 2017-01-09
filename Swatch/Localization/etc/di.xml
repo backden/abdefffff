@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+ <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Customer\Model\ResourceModel\AddressRepository" type="Swatch\Localization\Model\ResourceModel\AddressRepository" />
+    <preference for="Magento\Quote\Model\Quote\Address" type="Swatch\Localization\Model\Quote\Address" />
+
+    <type name="Magento\Sales\Block\Adminhtml\Order\Create\Form\Address">
+        <plugin name="setAdditionalFormElementRenderers" type="Swatch\Localization\Plugin\Sales\Block\Adminhtml\Order\Create\Form\Address" disabled="false" sortOrder="10"></plugin>
+    </type>
+    <type name="Magento\Customer\Model\Metadata\AddressMetadata">
+        <plugin name="resortAttribute" type="Swatch\Localization\Plugin\Customer\Model\Metadata\AddressMetadata"></plugin>
+    </type>
+    <type name="Magento\Customer\Model\Attribute">
+        <plugin name="saveRelateAttribute" type="Swatch\Localization\Plugin\Customer\Model\Attribute"></plugin>
+    </type>
+    <type name="Magento\Directory\Model\ResourceModel\Country\Collection">
+        <plugin name="set_default_label" type="Swatch\Localization\Plugin\Directory\Model\ResourceModel\Country\Collection" disabled="false" sortOrder="10"></plugin>
+    </type>
+    <type name="Magento\Directory\Model\ResourceModel\Region\Collection">
+        <plugin name="sortOptionByValue" type="Swatch\Localization\Plugin\Directory\Model\ResourceModel\Region\Collection" disabled="false" sortOrder="10"></plugin>
+    </type>
+</config>

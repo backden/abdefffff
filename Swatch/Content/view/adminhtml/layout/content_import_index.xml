@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Swatch. All rights reserved.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="formkey"/>
+    <head>
+        <css src="Swatch_Content::css/import.css"/>
+    </head>
+    <update handle="content_import_block"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Swatch\Content\Block\Adminhtml\Import\Container" name="content.import.container"/>
+            <block class="Swatch\Content\Block\Adminhtml\Import\Section\FileManagement" name="content.import.file" template="import/files.phtml">
+                <block class="Swatch\Content\Block\Adminhtml\Import\Uploader" name="uploader" template="Magento_Backend::widget/tabshoriz.phtml"/>
+            </block>
+            <block class="Swatch\Content\Block\Adminhtml\Import\Section\Progress" name="content.import.progress" template="import/progress.phtml"/>
+            <block class="Swatch\Content\Block\Adminhtml\Import\Section\Log" name="content.import.log" template="import/log.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

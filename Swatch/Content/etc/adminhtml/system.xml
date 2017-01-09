@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="swatch" translate="true" sortOrder="200">
+            <label>Swatch</label>
+        </tab>
+        <section id="import" translate="label" type="text" sortOrder="100" showInDefault="1">
+            <label>Imports</label>
+            <tab>swatch</tab>
+            <resource>Swatch_Content::config_import</resource>
+            <group id="product" translate="label" type="text" sortOrder="0" showInDefault="1">
+                <label>Product</label>
+                <field id="auto_import" translate="label comment" type="select" showInDefault="1" sortOrder="10">
+                    <label>Auto import</label>
+                    <comment>Automatically import after import file was uploaded</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="source_path" translate="label comment" type="text" showInDefault="1">
+                    <label>Source path</label>
+                    <comment>Relative path from Magento path</comment>
+                </field>
+            </group>
+            <group id="stock" translate="label" type="text" sortOrder="100" showInDefault="1">
+                <label>Physical Store Stock</label>
+                <field id="auto_import" translate="label comment" type="select" showInDefault="1" sortOrder="10">
+                    <label>Auto import</label>
+                    <comment>Automatically import import file was uploaded</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="source_path" translate="label comment" type="text" showInDefault="1">
+                    <label>Source path</label>
+                    <comment>Relative path from Magento path</comment>
+                </field>
+            </group>
+            <group id="attribute" translate="label" type="text" sortOrder="200" showInDefault="1">
+                <label>Attributes</label>
+                <field id="auto_import" translate="label comment" type="select" showInDefault="1" sortOrder="10">
+                    <label>Auto import</label>
+                    <comment>Automatically import after import file uploaded</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="source_path" translate="label comment" type="text" showInDefault="1">
+                    <label>Source path</label>
+                    <comment>Relative path from Magento path</comment>
+                </field>
+            </group>
+            <group id="store" translate="label" type="text" sortOrder="300" showInDefault="1">
+                <label>Physical Stores</label>
+                <field id="auto_import" translate="label comment" type="select" showInDefault="1" sortOrder="10">
+                    <label>Auto import</label>
+                    <comment>Automatically import after import file added</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="source_path" translate="label comment" type="text" showInDefault="1">
+                    <label>Source path</label>
+                    <comment>Relative path from Magento path</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,31 @@
+<section class="section-config log-import-file accordion" data-role="collapsible" data-mage-init='{"collapsible":{"openedState": "active", "collapsible": true, "active": false }}'>
+    <div class="admin__collapsible-block">
+        <a class="title" data-role="title">
+          <?php /* @escapeNotVerified */ echo __('File management') ?>
+        </a>
+        <div id="import-uploader-container" class="import-uploader-container" style="display: none;" data-role="content">
+            <?php echo $block->getChildHtml('uploader') ?>
+            <?php if (is_array($block->getChildBlock('uploader')->getTabsIds())) : ?>
+                <div id="uploader_tab_content" class="import-uploader-tab-content"></div>
+            <?php endif; ?>
+            <div id="content-import-file-progress" data-bind="scope:'content-import-file'">
+                <!-- ko template: getTemplate() --><!-- /ko -->
+                <script type="text/x-magento-init">
+            {
+                "#content-import-file-progress": {
+                    "Magento_Ui/js/core/app": {
+                       "components": {
+                            "content-import-file": {
+                                "component": "Swatch_Content/js/view/progress",
+                                "template" : "Swatch_Content/progress"
+                            }
+                        }
+                    }
+                }
+            }
+
+                </script>
+            </div>
+        </div>
+    </div>
+</section>

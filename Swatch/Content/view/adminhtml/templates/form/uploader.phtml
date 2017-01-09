@@ -1,0 +1,82 @@
+<?php
+/**
+ * Copyright © 2016 Swatch. All rights reserved.
+ */
+
+/** @var $block Swatch\Content\Block\Adminhtml\Form\FileUploader */
+?>
+<div class="row">
+    <div class="file-list col-m-6">
+        <div class="table-wrapper _overflow" style="overflow:auto;">
+        <table class="data-table admin__table-primary" summary="<?php /* @escapeNotVerified */ echo __('Items pending') ?>">
+            <thead>
+                <tr>
+                    <th class="col id"><?php /* @escapeNotVerified */ echo __('Id') ?></th>
+                    <th class="col name"><?php /* @escapeNotVerified */ echo __('File name') ?></th>
+                    <th class="col created-at"><?php /* @escapeNotVerified */ echo __('Added date') ?></th>
+                    <th class="col status"><?php /* @escapeNotVerified */ echo __('Status') ?></th>
+                    <th class="col action"><?php /* @escapeNotVerified */ echo __('Action') ?></th>
+                </tr>
+            </thead>
+            <?php /** @var $file \Swatch\Content\Model\Import\File */ ?>
+            <?php foreach ($block->getFiles() as $file): ?>
+            <tr>
+                <td class="id"><?php echo $file->getId() ?></td>
+                <td class="name"><?php echo $file->getName() ?></td>
+                <td><?php echo $block->formatDate($file->getCreatedAt(), \IntlDateFormatter::MEDIUM, true);  ?></td>
+                <td><?php echo $file->getStatus() ?></td>
+                <td><a href="#" onclick="delete"><?php echo __('Delete') ?></a> </td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        </div>
+    </div>
+    <div class="uploader col-m-5 col-m-push-1">
+        <div id="dragndrop-<?php echo $block->getHtmlId(); ?>" class="uploadfile-dragndrop">
+            <div class="uploadfile-text"><?php echo __('Drag files here') ?></div>
+            <div><?php echo __('Or, if you prefer...'); ?></div>
+            <div class="uploadfile-input">
+                <input type="file" multiple="multiple" name="uploadFiles"
+                       id="upload-input-<?php echo $block->getHtmlId(); ?>"/>
+            </div>
+        </div>
+    </div>
+    <script type='text/javascript'>
+        require(['jquery', 'Swatch_Content/js/html5Upload',
+                'Swatch_Content/js/model/upload-queue',
+                'Swatch_Content/js/model/file-view'],
+            function ($, html5Upload, uploadsModel, fileView) {
+                html5Upload.initialize({
+                    // URL that handles uploaded files
+                    uploadUrl: '<?php echo $this->getUrl('content/import/upload', ['type' => $block->getCode(), 'isAjax' => true]) ?>',
+                    dropContainer: document.getElementById('dragndrop-<?php echo $block->getHtmlId(); ?>'),
+                    inputField: document.getElementById('upload-input-<?php echo $block->getHtmlId(); ?>'),
+                    key: 'File',
+
+                    // Maximum number of simultaneous uploads
+                    // Other uploads will be added to uploads queue (optional)
+                    maxSimultaneousUploads: 2,
+                    data: {form_key: FORM_KEY},
+                    // Callback for each dropped or selected file
+                    // It receives one argument, add callbacks
+                    // by passing events map object: file.on({ ... })
+                    onFileAdded: function (file) {
+                        var fileModel = new fileView(file);
+                        uploadsModel.uploads.push(fileModel);
+
+                        file.on({
+                            // Called after received response from the server
+                            onCompleted: function (response) {
+                                fileModel.uploadCompleted(true);
+                            },
+                            // Called during upload progress, first parameter
+                            // is decimal value from 0 to 100.
+                            onProgress: function (progress, fileSize, uploadedBytes) {
+                                fileModel.uploadProgress(parseInt(progress, 10));
+                            }
+                        });
+                    }
+                });
+            });
+    </script>
+</div>

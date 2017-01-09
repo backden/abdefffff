@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Block\Checkout\AttributeMerger">
+        <plugin name="set_default_country_value" type="Swatch\Localization\Plugin\Checkout\Block\Checkout\AttributeMerger" disabled="false" sortOrder="10" ></plugin>
+    </type>
+    <type name="Magento\Customer\CustomerData\SectionPoolInterface">
+        <arguments>
+            <argument name="sectionSourceMap" xsi:type="array">
+                <item name="directory-city-data" xsi:type="string">Swatch\Localization\CustomerData\CityData</item>
+                <item name="directory-district-data" xsi:type="string">Swatch\Localization\CustomerData\DistrictData</item>
+            </argument>
+        </arguments>
+    </type>
+    <preference for="Magento\Checkout\Block\Checkout\LayoutProcessor" type="Swatch\Localization\Block\Checkout\LayoutProcessor"></preference>
+
+</config>

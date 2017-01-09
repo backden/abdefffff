@@ -1,0 +1,63 @@
+/* Upload image dialog */
+.uploadfile-dragndrop {
+    border: 2px dashed #DDD;
+    margin: 10px 0;
+    padding: 20px 20px;
+    text-align: center;
+    color: #DDD;
+}
+.uploadfile-dragndrop.drag-over
+{
+    background: rgba(248, 248, 248, 0.39);
+}
+.uploadfile-text {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.uploadfile-input {
+    margin: 20px 0;
+}
+
+.uploadfile-upload {
+    background: #EEE;
+    margin: 4px 0;
+}
+
+.uploadfile-uploadcompleted {
+    background: #d1f4ac;
+}
+
+.uploadfile-fileinfo {
+    padding: 5px;
+    font-size: 11px;
+    position: relative;
+}
+
+.uploadfile-progresspct {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.uploadfile-progress {
+    background: #999;
+}
+
+.uploadfile-progressbar {
+    background: maroon;
+    height: 2px;
+}
+
+.uploadfile-totalprogress {
+    background: #999;
+}
+
+.uploadfile-totalprogressbar {
+    background: #107EC2;
+    height: 6px;
+}
+
+.description {
+    margin: 40px 0;
+}

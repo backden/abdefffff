@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Swatch\Content\Model\Import\TypeInterface" type="Swatch\Content\Model\Import\Type" />
+    <preference for="Swatch\Content\Model\Import\TypeListInterface" type="Swatch\Content\Model\Import\TypeList" />
+    <virtualType name="Swatch\Content\Model\Import\Type\Product" type="Swatch\Content\Model\Import\Type">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="code" xsi:type="string">product</item>
+                <item name="type" xsi:type="string" translate="true">Product</item>
+                <item name="description" xsi:type="string" translate="true">Product import</item>
+                <item name="source" xsi:type="string">var/xml_import/ItemMaster.xml</item>
+                <item name="mode" xsi:type="string">Update</item>
+                <item name="is_auto" xsi:type="boolean">true</item>
+                <item name="status" xsi:type="number">0</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Swatch\Content\Model\Import\Type\Stock" type="Swatch\Content\Model\Import\Type">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="code" xsi:type="string">stock</item>
+                <item name="type" xsi:type="string" translate="true">Physical Store Stock</item>
+                <item name="description" xsi:type="string" translate="true">Stock import for physicals stores</item>
+                <item name="source" xsi:type="string">var/csv_import/store_stock_import.csv</item>
+                <item name="mode" xsi:type="string">-</item>
+                <item name="is_auto" xsi:type="boolean">true</item>
+                <item name="status" xsi:type="number">0</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Swatch\Content\Model\Import\Type\Attribute" type="Swatch\Content\Model\Import\Type">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="code" xsi:type="string">store</item>
+                <item name="type" xsi:type="string" translate="true">Attributes</item>
+                <item name="description" xsi:type="string" translate="true">Attributes import</item>
+                <item name="source" xsi:type="string">var/xml_import/Attributes.xml</item>
+                <item name="mode" xsi:type="string">-</item>
+                <item name="is_auto" xsi:type="boolean">false</item>
+                <item name="status" xsi:type="number">1</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Swatch\Content\Model\Import\Type\Store" type="Swatch\Content\Model\Import\Type">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="code" xsi:type="string">attribute</item>
+                <item name="type" xsi:type="string" translate="true">Physical Stores</item>
+                <item name="description" xsi:type="string" translate="true">Physical Stores import</item>
+                <item name="source" xsi:type="string">var/xml_import/Attributes.xml</item>
+                <item name="mode" xsi:type="string">-</item>
+                <item name="is_auto" xsi:type="boolean">false</item>
+                <item name="status" xsi:type="number">1</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Swatch\Content\Model\Import\TypeList">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="types" xsi:type="array">
+                    <item name="stock" xsi:type="object">Swatch\Content\Model\Import\Type\Stock</item>
+                    <item name="product" xsi:type="object">Swatch\Content\Model\Import\Type\Product</item>
+                    <item name="attribute" xsi:type="object">Swatch\Content\Model\Import\Type\Attribute</item>
+                    <item name="store" xsi:type="object">Swatch\Content\Model\Import\Type\Store</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

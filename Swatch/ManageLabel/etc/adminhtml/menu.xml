@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+  <menu>
+    <add id="Swatch::manage_label" module="Swatch_ManageLabel" resource="Swatch_Content::Translate" sortOrder="9991"
+         parent="Swatch::top_level"
+         action="managecontent/index/index"
+         title="Manage Labels"/>
+
+    <add id="Swatch::top_level" title="Manage Content" translate="title" module="Swatch_ManageLabel"
+         sortOrder="999"
+         parent="Magento_Backend::stores" dependsOnModule="Swatch_ManageLabel"
+         resource="Swatch_Content::main"/>
+  </menu>
+
+</config>

@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+	<router id="admin">
+		<route frontName="managecontent" id="managecontent">
+			<module before="Magento_Backend" name="Swatch_ManageLabel"/>
+		</route>
+		<route frontName="swatch_managelabel" id="swatch_managelabel">
+			<module before="Magento_Backend" name="Swatch_ManageLabel"/>
+		</route>
+	</router>
+</config>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="address">
+        <field name="region_id_input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="sortOrder" xsi:type="number">103</item>
+                    <item name="deps" xsi:type="string">${ $.provider }:${ $.parentScope }.region_id</item>
+                </item>
+            </argument>
+        </field>
+        <field name="city">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="visible" xsi:type="boolean">false</item>
+                </item>
+            </argument>
+        </field>
+        <field name="city_id_input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="sortOrder" xsi:type="number">105</item>
+                    <item name="deps" xsi:type="string">${ $.provider }:${ $.parentScope }.city_id</item>
+                </item>
+            </argument>
+        </field>
+        <field name="city_id">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">select</item>
+                    <item name="source" xsi:type="string">address</item>
+                    <item name="customEntry" xsi:type="string">city</item>
+                    <item name="sortOrder" xsi:type="number">105</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                    <item name="exports" xsi:type="array">
+                        <item name="value" xsi:type="string">${ $.provider }:${ $.parentScope }.city:value</item>
+                    </item>
+                    <item name="filterBy" xsi:type="array">
+                        <item name="target" xsi:type="string">${ $.provider }:${ $.parentScope }.region_id</item>
+                        <item name="field" xsi:type="string">region_id</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+        <field name="district">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="visible" xsi:type="boolean">false</item>
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="source" xsi:type="string">address</item>
+                    <item name="sortOrder" xsi:type="number">107</item>
+                </item>
+            </argument>
+        </field>
+        <field name="district_id_input">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">input</item>
+                    <item name="sortOrder" xsi:type="number">107</item>
+                    <item name="deps" xsi:type="string">${ $.provider }:${ $.parentScope }.district_id</item>
+                </item>
+            </argument>
+        </field>
+        <field name="district_id">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">select</item>
+                    <item name="source" xsi:type="string">address</item>
+                    <item name="customEntry" xsi:type="string">district</item>
+                    <item name="sortOrder" xsi:type="number">107</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                    <item name="exports" xsi:type="array">
+                        <item name="value" xsi:type="string">${ $.provider }:${ $.parentScope }.district:value</item>
+                    </item>
+                    <item name="filterBy" xsi:type="array">
+                        <item name="target" xsi:type="string">${ $.provider }:${ $.parentScope }.city_id</item>
+                        <item name="field" xsi:type="string">city_id</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
+    </fieldset>
+</form>

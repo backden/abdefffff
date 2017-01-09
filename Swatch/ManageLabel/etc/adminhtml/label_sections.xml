@@ -1,0 +1,31 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+  <system>
+    <tab id="sections" translate="label" sortOrder="10">
+      <label>Sections</label>
+    </tab>
+    <section id="label_sections" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+             showInStore="1">
+      <class>separator-top</class>
+      <label>Sections</label>
+      <tab>sections</tab>
+      <resource>Swatch_ManageLabel::Translate</resource>
+      <group id="general" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>General</label>
+        <field id="enable_frontend" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Enable</label>
+          <comment>Enable frontend</comment>
+          <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        </field>
+        <field id="button_title" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Button Title</label>
+          <validate>validate-no-empty</validate>
+        </field>
+        <field id="styles" translate="label comment" type="text" sortOrder="3" showInDefault="0" showInWebsite="1" showInStore="1">
+          <label>Background Color</label>
+          <comment>E.g: background-color: darkorange;</comment>
+        </field>
+      </group>
+    </section>
+  </system>
+</config>
