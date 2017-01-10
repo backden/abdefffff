@@ -1,16 +1,6 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-	<virtualType name="Swatch\ManageLabel\Model\ResourceModel\Translate\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
-		<arguments>
-			<argument name="mainTable" xsi:type="string">swatch_translate</argument>
-			<argument name="resourceModel" xsi:type="string">Swatch\ManageLabel\Model\ResourceModel\Translate\Collection</argument>
-		</arguments>
-	</virtualType>
-	<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-		<arguments>
-			<argument name="collections" xsi:type="array">
-				<item name="swatch_translate_grid_data_source" xsi:type="string">Swatch\ManageLabel\Model\ResourceModel\Translate\Grid\Collection</item>
-			</argument>
-		</arguments>
-	</type>
+	<preference for="Swatch\ManageLabel\Api\TranslateRepositoryInterface" type="Swatch\ManageLabel\Model\TranslateRepository" />
+	<preference for="Swatch\ManageLabel\Api\Data\TranslateInterface" type="Swatch\ManageLabel\Model\Translate" />
+	<preference for="Swatch\ManageLabel\Api\Data\TranslateSearchResultsInterface" type="Swatch\ManageLabel\Model\TranslateSearchResults" />
 </config>

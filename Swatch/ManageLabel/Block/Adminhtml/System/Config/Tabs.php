@@ -33,7 +33,7 @@ class Tabs extends \Magento\Backend\Block\Widget
      *
      * @var string
      */
-    protected $_template = 'Magento_Config::system/config/tabs.phtml';
+    protected $_template = 'Swatch_ManageLabel::system/config/tabs.phtml';
 
     /**
      * Currently selected section id

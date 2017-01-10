@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
   <menu>
-    <add id="Swatch::manage_label" module="Swatch_ManageLabel" resource="Swatch_Content::Translate" sortOrder="9991"
+    <add id="Swatch::manage_label" module="Swatch_ManageLabel" resource="Swatch_ManageLabel::Translate" sortOrder="9991"
          parent="Swatch::top_level"
          action="managecontent/index/index"
          title="Manage Labels"/>

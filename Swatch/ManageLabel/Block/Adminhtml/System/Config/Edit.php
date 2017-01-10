@@ -15,7 +15,6 @@ use Swatch\ManageLabel\Model\Config\Structure\Structure;
 
 class Edit extends \Magento\Config\Block\System\Config\Edit
 {
-
     /**
      * Edit constructor.
      * @param \Magento\Backend\Block\Template\Context $context
@@ -35,8 +34,53 @@ class Edit extends \Magento\Config\Block\System\Config\Edit
      */
     protected function _prepareLayout()
     {
-        $form = $this->getLayout()->createBlock('Swatch\ManageLabel\Block\Adminhtml\System\Config\Form');
+        $section = $this->_configStructure->getElement($this->getRequest()->getParam('section'));
+        $this->_formBlockName = $section->getFrontendModel();
+        if (empty($this->_formBlockName)) {
+            $this->_formBlockName = self::DEFAULT_SECTION_BLOCK;
+        }
+        $this->setTitle($section->getLabel());
+        $this->setHeaderCss($section->getHeaderCss());
+
+        $this->getToolbar()->addChild(
+            'reset_button',
+            'Magento\Backend\Block\Widget\Button',
+            [
+                'id' => 'reset',
+                'label' => __('Reset'),
+                'class' => 'reset',
+                'onclick' => 'window.location.href=""',
+                'data_attribute' => [
+                    'mage-init' => ['button' => ['target' => '#config-edit-form']],
+                ]
+            ]
+        );
+
+        $this->getToolbar()->addChild(
+            'save_button',
+            'Magento\Backend\Block\Widget\Button',
+            [
+                'id' => 'save',
+                'label' => __('Save'),
+                'class' => 'save primary',
+                'data_attribute' => [
+                    'mage-init' => ['button' => ['event' => 'save', 'target' => '#config-edit-form']],
+                ]
+            ]
+        );
+
+        $formBlockName = 'Swatch\ManageLabel\Block\Adminhtml\System\Config\Form';
+        $form = $this->getLayout()->createBlock($formBlockName);
         $this->setChild('form', $form);
-        return parent::_prepareLayout();
+        return $this;
+    }
+
+    /**
+     * Submit save content url
+     * @return string
+     */
+    public function getSaveUrl()
+    {
+        return $this->getUrl('*/translate/save', ['_current' => true]);
     }
 }

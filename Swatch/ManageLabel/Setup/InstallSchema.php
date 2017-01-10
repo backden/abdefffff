@@ -1,10 +1,10 @@
 <?php
 /**
  * Manage Label Of StoreView
- * Copyright (C) 2016  
- * 
+ * Copyright (C) 2016
+ *
  * This file included in Swatch/ManageLabel is licensed under OSL 3.0
- * 
+ *
  * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * Please see LICENSE.txt for the full text of the OSL 3.0 license
  */
@@ -30,22 +30,22 @@ class InstallSchema implements InstallSchemaInterface
 
         $table_swatch_translate = $setup->getConnection()->newTable($setup->getTable('swatch_translate'));
 
-        
+
         $table_swatch_translate->addColumn(
             'id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            array('identity' => true,'nullable' => false,'primary' => true,'unsigned' => true,),
+            array('identity' => true, 'nullable' => false, 'primary' => true, 'unsigned' => true,),
             'Entity ID'
         )->addColumn(
             'store_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            array('nullable' => false),
+            array('nullable' => false, 'default' => 1),
             'Store ID'
         )->addColumn(
-            'section_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            'section',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             null,
             array('nullable' => false),
             'Section ID'
@@ -62,17 +62,6 @@ class InstallSchema implements InstallSchemaInterface
             array('nullable' => true),
             'Translated Label'
         );
-
-
-        
-        $table_swatch_translate->addColumn(
-            'id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            [],
-            'id'
-        );
-        
 
         $setup->getConnection()->createTable($table_swatch_translate);
 

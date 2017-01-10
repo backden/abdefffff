@@ -1,18 +1,8 @@
 {
     "name": "swatch/module-managelabel",
-    "description": "Manage Label Of StoreView",
+    "description": "Manage Labels Of StoreView",
     "license": "OSL-3.0",
-    "authors": [
-        {
-            "name": "Mage2Gen",
-            "email": "info@mage2gen.com"
-        },
-        {
-            "name": "LONG HOANG",
-            "email": "exp.hl.pc@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
+    "authors": [],
     "require": {},
     "autoload": {
         "psr-4": {

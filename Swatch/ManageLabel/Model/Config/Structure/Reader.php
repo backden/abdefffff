@@ -15,31 +15,39 @@ use Magento\Framework\View\TemplateEngine\Xhtml\CompilerInterface;
 class Reader extends \Magento\Config\Model\Config\Structure\Reader
 {
 
-//    public function __construct(
-//        \Magento\Framework\Config\FileResolverInterface $fileResolver,
-//        Converter $converter,
-//        \Magento\Config\Model\Config\SchemaLocator $schemaLocator,
-//        \Magento\Framework\Config\ValidationStateInterface $validationState,
-//        CompilerInterface $compiler,
-//        $fileName = 'label_sections.xml',
-//        array $idAttributes = [],
-//        $domDocumentClass = 'Magento\Framework\Config\Dom',
-//        $defaultScope = 'global'
-//    ) {
-//        parent::__construct($fileResolver, $converter, $schemaLocator, $validationState, $fileName, $idAttributes, $domDocumentClass, $defaultScope);
-//    }
-
+    /**
+     * Reader constructor.
+     * @param \Magento\Framework\Config\FileResolverInterface $fileResolver
+     * @param Converter $converter
+     * @param \Magento\Config\Model\Config\SchemaLocator $schemaLocator
+     * @param \Magento\Framework\Config\ValidationStateInterface $validationState
+     * @param CompilerInterface $compiler
+     * @param string $fileName
+     * @param array $idAttributes
+     * @param string $domDocumentClass
+     * @param string $defaultScope
+     */
     public function __construct(
         \Magento\Framework\Config\FileResolverInterface $fileResolver,
         Converter $converter,
         \Magento\Config\Model\Config\SchemaLocator $schemaLocator,
         \Magento\Framework\Config\ValidationStateInterface $validationState,
         CompilerInterface $compiler,
-        $fileName = 'label_sections.xml',
+        $fileName = 'manage_labels.xml',
         array $idAttributes = [],
         $domDocumentClass = 'Magento\Framework\Config\Dom',
         $defaultScope = 'global'
     ) {
-        parent::__construct($fileResolver, $converter, $schemaLocator, $validationState, $compiler, $fileName, $idAttributes, $domDocumentClass, $defaultScope);
+        parent::__construct(
+            $fileResolver,
+            $converter,
+            $schemaLocator,
+            $validationState,
+            $compiler,
+            $fileName,
+            $idAttributes,
+            $domDocumentClass,
+            $defaultScope
+        );
     }
 }

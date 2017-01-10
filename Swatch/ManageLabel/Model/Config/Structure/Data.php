@@ -24,6 +24,7 @@ class Data extends \Magento\Config\Model\Config\Structure\Data
         \Magento\Framework\Config\CacheInterface $cache,
         $cacheId
     ) {
+        $cacheId = 'manage_labels';
         parent::__construct($reader, $configScope, $cache, $cacheId);
     }
 }

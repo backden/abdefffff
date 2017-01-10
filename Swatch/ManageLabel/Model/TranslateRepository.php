@@ -1,16 +1,18 @@
 <?php
 /**
  * Manage Label Of StoreView
- * Copyright (C) 2016  
- * 
+ * Copyright (C) 2016
+ *
  * This file included in Swatch/ManageLabel is licensed under OSL 3.0
- * 
+ *
  * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * Please see LICENSE.txt for the full text of the OSL 3.0 license
  */
 
 namespace Swatch\ManageLabel\Model;
 
+use Magento\Framework\Api\Search\SearchResultInterfaceFactory;
+use Swatch\ManageLabel\Api\Data\TranslateInterface;
 use Swatch\ManageLabel\Api\TranslateRepositoryInterface;
 use Swatch\ManageLabel\Api\Data\TranslateSearchResultsInterfaceFactory;
 use Swatch\ManageLabel\Api\Data\TranslateInterfaceFactory;
@@ -27,20 +29,44 @@ use Magento\Store\Model\StoreManagerInterface;
 class TranslateRepository implements TranslateRepositoryInterface
 {
 
+    /**
+     * @var ResourceTranslate $resource
+     */
     protected $resource;
 
-    protected $TranslateFactory;
+    /**
+     * @var TranslateSearchResultsInterfaceFactory $translateFactory
+     */
+    protected $translateFactory;
 
-    protected $TranslateCollectionFactory;
+    /**
+     * @var TranslateCollectionFactory $translateCollectionFactory
+     */
+    protected $translateCollectionFactory;
 
+    /**
+     * @var TranslateSearchResultsInterfaceFactory $searchResultsFactory
+     */
     protected $searchResultsFactory;
 
+    /**
+     * @var DataObjectHelper $dataObjectHelper
+     */
     protected $dataObjectHelper;
 
+    /**
+     * @var DataObjectProcessor $dataObjectProcessor
+     */
     protected $dataObjectProcessor;
 
+    /**
+     * @var TranslateInterfaceFactory $dataTranslateFactory
+     */
     protected $dataTranslateFactory;
 
+    /**
+     * @var StoreManagerInterface $storeManager
+     */
     private $storeManager;
 
 
@@ -80,10 +106,6 @@ class TranslateRepository implements TranslateRepositoryInterface
     public function save(
         \Swatch\ManageLabel\Api\Data\TranslateInterface $translate
     ) {
-        /* if (empty($translate->getStoreId())) {
-            $storeId = $this->storeManager->getStore()->getId();
-            $translate->setStoreId($storeId);
-        } */
         try {
             $this->resource->save($translate);
         } catch (\Exception $exception) {
@@ -93,6 +115,18 @@ class TranslateRepository implements TranslateRepositoryInterface
             ));
         }
         return $translate;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveCollection(array $items)
+    {
+        if (count($items) > 0) {
+            foreach ($items as $translate) {
+                $this->save($translate);
+            }
+        }
     }
 
     /**
@@ -116,15 +150,11 @@ class TranslateRepository implements TranslateRepositoryInterface
     ) {
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($criteria);
-        
+
         $collection = $this->translateCollectionFactory->create();
         foreach ($criteria->getFilterGroups() as $filterGroup) {
             foreach ($filterGroup->getFilters() as $filter) {
-                if ($filter->getField() === 'store_id') {
-                    $collection->addStoreFilter($filter->getValue(), false);
-                    continue;
-                }
-                $condition = $filter->getConditionType() ?: 'eq';
+                $condition = $filter->getConditionType() ? : 'eq';
                 $collection->addFieldToFilter($filter->getField(), [$condition => $filter->getValue()]);
             }
         }
@@ -142,18 +172,15 @@ class TranslateRepository implements TranslateRepositoryInterface
         $collection->setCurPage($criteria->getCurrentPage());
         $collection->setPageSize($criteria->getPageSize());
         $items = [];
-        
+
         foreach ($collection as $translateModel) {
             $translateData = $this->dataTranslateFactory->create();
             $this->dataObjectHelper->populateWithArray(
                 $translateData,
                 $translateModel->getData(),
-                'Swatch\ManageLabel\Api\Data\TranslateInterface'
+                TranslateInterface::class
             );
-            $items[] = $this->dataObjectProcessor->buildOutputDataArray(
-                $translateData,
-                'Swatch\ManageLabel\Api\Data\TranslateInterface'
-            );
+            $items[] = $translateData;
         }
         $searchResults->setItems($items);
         return $searchResults;

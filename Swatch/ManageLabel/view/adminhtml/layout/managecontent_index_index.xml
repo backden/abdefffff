@@ -18,16 +18,10 @@
 			</block>
 		</referenceContainer>
 		<referenceContainer name="left">
-			<!-- To Manage Sections Area -->
 			<block class="Swatch\ManageLabel\Block\Adminhtml\System\Config\Tabs" name="managelabel.index.index.tabs"/>
 		</referenceContainer>
-		<!--<referenceContainer name="content">-->
-			<!--<block name="system.config.edit" class="Magento\Config\Block\System\Config\Edit"/>-->
-		<!--</referenceContainer>-->
 		<referenceContainer name="content">
-			<!--<block class="Swatch\ManageLabel\Block\Adminhtml\Index\Index" name="index.index" template="Swatch_ManageLabel::index/index.phtml"/>-->
 			<block class="Swatch\ManageLabel\Block\Adminhtml\System\Config\Edit" name="managelabel.index.index.form"/>
-			<!--<uiComponent name="swatch_translate_form" />-->
 		</referenceContainer>
 	</body>
 </page>
