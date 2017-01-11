@@ -15,6 +15,10 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\InstallSchemaInterface;
 
+/**
+ * Class InstallSchema
+ * @package Swatch\ManageLabel\Setup
+ */
 class InstallSchema implements InstallSchemaInterface
 {
 
@@ -50,6 +54,12 @@ class InstallSchema implements InstallSchemaInterface
             array('nullable' => false),
             'Section ID'
         )->addColumn(
+            'id_string',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            null,
+            array('nullable' => false),
+            'ID Of Label'
+        )->addColumn(
             'string',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             null,
@@ -61,6 +71,12 @@ class InstallSchema implements InstallSchemaInterface
             null,
             array('nullable' => true),
             'Translated Label'
+        )->addColumn(
+            'use_default',
+            \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
+            1,
+            array('nullable' => true),
+            'Use Default Config'
         );
 
         $setup->getConnection()->createTable($table_swatch_translate);

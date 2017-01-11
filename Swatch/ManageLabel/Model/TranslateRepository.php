@@ -12,6 +12,7 @@
 namespace Swatch\ManageLabel\Model;
 
 use Magento\Framework\Api\Search\SearchResultInterfaceFactory;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Swatch\ManageLabel\Api\Data\TranslateInterface;
 use Swatch\ManageLabel\Api\TranslateRepositoryInterface;
 use Swatch\ManageLabel\Api\Data\TranslateSearchResultsInterfaceFactory;
@@ -28,6 +29,11 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class TranslateRepository implements TranslateRepositoryInterface
 {
+
+    /**
+     * @var array $sectionTranslate
+     */
+    protected $sectionTranslate;
 
     /**
      * @var ResourceTranslate $resource
@@ -69,6 +75,11 @@ class TranslateRepository implements TranslateRepositoryInterface
      */
     private $storeManager;
 
+    /**
+     * @var SearchCriteriaBuilder $searchCriteriaBuilder
+     */
+    protected $searchCriteriaBuilder;
+
 
     /**
      * @param ResourceTranslate $resource
@@ -88,7 +99,8 @@ class TranslateRepository implements TranslateRepositoryInterface
         TranslateSearchResultsInterfaceFactory $searchResultsFactory,
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->resource = $resource;
         $this->translateFactory = $translateFactory;
@@ -98,6 +110,7 @@ class TranslateRepository implements TranslateRepositoryInterface
         $this->dataTranslateFactory = $dataTranslateFactory;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->storeManager = $storeManager;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -120,11 +133,27 @@ class TranslateRepository implements TranslateRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function saveCollection(array $items)
+    public function saveCollection(array $items, $needUpdateExtend = false)
     {
         if (count($items) > 0) {
+            $section = "";
             foreach ($items as $translate) {
+                $section = $translate->getSection();
                 $this->save($translate);
+            }
+            // Update for other section which has labels using value default
+            if ($needUpdateExtend) {
+                $collection = $this->translateCollectionFactory->create();
+                // Find all label by section
+                $itemsNeedUpdate = $collection->getItemsByColumnValue(TranslateInterface::SECTION_NAME, $section);
+                foreach ($itemsNeedUpdate as $item) {
+                    if ($item->isUseDefault() && isset($items[$item->getString()])) {
+                        $defaultItem = $items[$item->getString()];
+                        // Update translate text
+                        $item->setTranslate($defaultItem->getTranslate());
+                        $this->save($item);
+                    }
+                }
             }
         }
     }
@@ -209,5 +238,37 @@ class TranslateRepository implements TranslateRepositoryInterface
     public function deleteById($translateId)
     {
         return $this->delete($this->getById($translateId));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function fetchSectionData($storeScope, $section, $group = 'labels', $useDefault = false)
+    {
+        if (!isset($this->sectionTranslate[$section])) {
+            $storeId = !empty($storeScope) ? $storeScope : 0;
+            if ($useDefault) {
+                $storeId = 0;
+            }
+            $searchBuilder = $this->searchCriteriaBuilder->addFilter('store_id', $storeId)
+                ->addFilter('section', $section);
+            $searchCriteria = $searchBuilder->create();
+            $translates = $this->getList($searchCriteria)->getItems();
+            if (count($translates) > 0) {
+                $this->sectionTranslate[$section] = $translates;
+            }
+        }
+        return $this->sectionTranslate[$section];
+    }
+
+    /**
+     * @param $storeId
+     * @return mixed
+     */
+    public function getListByStore(
+        $storeId
+    ) {
+        $collection = $this->translateCollectionFactory->create();
+        return $collection->getItemsByColumnValue(TranslateInterface::STORE_ID, $storeId);
     }
 }

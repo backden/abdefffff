@@ -3,4 +3,8 @@
 	<preference for="Swatch\ManageLabel\Api\TranslateRepositoryInterface" type="Swatch\ManageLabel\Model\TranslateRepository" />
 	<preference for="Swatch\ManageLabel\Api\Data\TranslateInterface" type="Swatch\ManageLabel\Model\Translate" />
 	<preference for="Swatch\ManageLabel\Api\Data\TranslateSearchResultsInterface" type="Swatch\ManageLabel\Model\TranslateSearchResults" />
+
+	<type name="Magento\Framework\Phrase\RendererInterface">
+		<plugin name="labelTranslatePlugin" type="Swatch\ManageLabel\Plugin\RendererInterfacePlugin" sortOrder="100"></plugin>
+	</type>
 </config>

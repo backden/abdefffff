@@ -1,0 +1,29 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+  <system>
+    <tab id="sections" translate="label" sortOrder="10">
+      <label>Sections</label>
+    </tab>
+    <section id="home_page" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+      <class>separator-top</class>
+      <label>Home page</label>
+      <tab>sections</tab>
+      <resource>Swatch_ManageLabel::Translate</resource>
+      <group id="labels" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Labels</label>
+        <field id="swatch_tv" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Swatch TV</label>
+        </field>
+        <field id="best_seller" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Best Seller</label>
+        </field>
+        <field id="previous_slide" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Previous slide</label>
+        </field>
+        <field id="next_slide" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Next slide</label>
+        </field>
+      </group>
+    </section>
+  </system>
+</config>

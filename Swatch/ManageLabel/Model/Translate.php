@@ -40,7 +40,8 @@ class Translate extends \Magento\Framework\Model\AbstractModel implements Transl
      */
     public function setId($id)
     {
-        return $this->setData(self::TRANSLATE_ID, $id);
+        $this->setData(self::TRANSLATE_ID, $id);
+        return $this;
     }
 
     /**
@@ -49,7 +50,8 @@ class Translate extends \Magento\Framework\Model\AbstractModel implements Transl
      */
     public function setStoreId($storeId)
     {
-        return $this->setData(self::STORE_ID, $storeId);
+        $this->setData(self::STORE_ID, $storeId);
+        return $this;
     }
 
     /**
@@ -58,7 +60,8 @@ class Translate extends \Magento\Framework\Model\AbstractModel implements Transl
      */
     public function setSection($section)
     {
-        return $this->setData(self::SECTION_NAME, $section);
+        $this->setData(self::SECTION_NAME, $section);
+        return $this;
     }
 
     /**
@@ -67,7 +70,8 @@ class Translate extends \Magento\Framework\Model\AbstractModel implements Transl
      */
     public function setString($string)
     {
-        return $this->setData(self::STRING_LABEL, $string);
+        $this->setData(self::STRING_LABEL, $string);
+        return $this;
     }
 
     /**
@@ -76,7 +80,8 @@ class Translate extends \Magento\Framework\Model\AbstractModel implements Transl
      */
     public function setTranslate($translate)
     {
-        return $this->setData(self::TRANSLATE_LABEL, $translate);
+        $this->setData(self::TRANSLATE_LABEL, $translate);
+        return $this;
     }
 
     /**
@@ -113,5 +118,37 @@ class Translate extends \Magento\Framework\Model\AbstractModel implements Transl
     public function getTranslate()
     {
         return $this->getData(self::TRANSLATE_LABEL);
+    }
+
+    public function setUseDefault($useDefault)
+    {
+        $this->setData(self::USE_DEFAULT, $useDefault);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUseDefault()
+    {
+        return $this->getData(self::USE_DEFAULT);
+    }
+
+    /**
+     * @param string $idString
+     * @return mixed
+     */
+    public function setIdString($idString)
+    {
+        $this->setData(self::ID_LABEL);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdString()
+    {
+        return $this->getData(self::ID_LABEL);
     }
 }

@@ -12,6 +12,7 @@
 namespace Swatch\ManageLabel\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Swatch\ManageLabel\Api\Data\TranslateInterface;
 use Swatch\ManageLabel\Model\ResourceModel\Translate\Collection;
 
 interface TranslateRepositoryInterface
@@ -32,10 +33,12 @@ interface TranslateRepositoryInterface
 
     /**
      * Save multiple records from array
-     * @param array $items
+     * @param TranslateInterface[] $items
+     * @param bool $needUpdateExtend
      */
     public function saveCollection(
-        array $items
+        array $items,
+        $needUpdateExtend = false
     );
 
     /**
@@ -57,6 +60,24 @@ interface TranslateRepositoryInterface
     public function getList(
         \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
     );
+
+    /**
+     * @param $storeId
+     * @return mixed
+     */
+    public function getListByStore(
+        $storeId
+    );
+
+    /**
+     * Fetch data by section and store id (current)
+     * @param string $storeScope
+     * @param string $section
+     * @param string $group Optional
+     * @param bool $useDefault
+     * @return array
+     */
+    public function fetchSectionData($storeScope, $section, $group = 'labels', $useDefault = false);
 
     /**
      * Delete Translate

@@ -4,7 +4,7 @@
   <menu>
     <add id="Swatch::manage_label" module="Swatch_ManageLabel" resource="Swatch_ManageLabel::Translate" sortOrder="9991"
          parent="Swatch::top_level"
-         action="managecontent/index/index"
+         action="managecontent/index/index/section/home_page"
          title="Manage Labels"/>
 
     <add id="Swatch::top_level" title="Manage Content" translate="title" module="Swatch_ManageLabel"

@@ -17,9 +17,12 @@ interface TranslateInterface
     const TRANSLATE_ID = 'id';
     const STORE_ID = 'store_id';
     const SECTION_NAME = 'section';
+    const ID_LABEL = 'id_string';
     const STRING_LABEL = 'string';
     const TRANSLATE_LABEL = 'translate';
+    const USE_DEFAULT = 'use_default';
 
+    const USE_DEFAULT_ENABLE = 1;
 
     /**
      * Get id
@@ -61,26 +64,44 @@ interface TranslateInterface
     public function setTranslate($translate);
 
     /**
-     * @param $storeId
      * @return int
      */
     public function getStoreId();
 
     /**
-     * @param $section
      * @return string
      */
     public function getSection();
 
     /**
-     * @param $string
      * @return string
      */
     public function getString();
 
     /**
-     * @param $translate
      * @return string
      */
     public function getTranslate();
+
+    /**
+     * @param $useDefault
+     * @return mixed
+     */
+    public function setUseDefault($useDefault);
+
+    /**
+     * @return bool
+     */
+    public function isUseDefault();
+
+    /**
+     * @param string $idString
+     * @return mixed
+     */
+    public function setIdString($idString);
+
+    /**
+     * @return string
+     */
+    public function getIdString();
 }

@@ -1,4 +1,12 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+  <type name="Swatch\ManageLabel\Model\Config\Structure\Reader">
+    <arguments>
+      <argument name="config" xsi:type="array">
+        <item name="prefixFile" xsi:type="string">label_</item>
+        <item name="folderTranslate" xsi:type="string">translates</item>
+      </argument>
+    </arguments>
+  </type>
 </config>

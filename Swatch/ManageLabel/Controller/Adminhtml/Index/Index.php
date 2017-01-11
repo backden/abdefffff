@@ -55,13 +55,14 @@ class Index extends \Magento\Backend\App\Action
         if (empty($storeId)) {
             // Get website or default
             $websiteId = $this->getRequest()->getParam('website') ?
-                $this->getRequest()->getParam('website') : 1;
+                $this->getRequest()->getParam('website') : 0;
             $website = $this->storeManager->getWebsite($websiteId);
             $group = $this->storeManager->getGroup($website->getDefaultGroupId());
             $storeId = $group->getDefaultStoreId();
         }
         $page = $this->resultPageFactory->create();
         $page->getConfig()->getTitle()->set(__('Manage Labels'));
+        // Force display on store scope
         $this->getRequest()->setParams([
             'store' => $storeId
         ]);

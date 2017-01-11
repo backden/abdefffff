@@ -9,6 +9,7 @@
 namespace Swatch\ManageLabel\Block\Adminhtml\System\Config;
 
 
+use Swatch\ManageLabel\Api\Data\TranslateInterface;
 use Swatch\ManageLabel\Api\TranslateRepositoryInterface;
 
 class Form extends \Magento\Config\Block\System\Config\Form
@@ -19,11 +20,6 @@ class Form extends \Magento\Config\Block\System\Config\Form
      * @var TranslateRepositoryInterface $translateRepository
      */
     protected $translateRepository;
-
-    /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
-     */
-    protected $searchCriteriaBuilder;
 
     /**
      * Form constructor.
@@ -45,12 +41,19 @@ class Form extends \Magento\Config\Block\System\Config\Form
         \Magento\Config\Block\System\Config\Form\Fieldset\Factory $fieldsetFactory,
         \Magento\Config\Block\System\Config\Form\Field\Factory $fieldFactory,
         TranslateRepositoryInterface $translateRepository,
-        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         array $data = []
     ) {
         $this->translateRepository = $translateRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        parent::__construct($context, $registry, $formFactory, $configFactory, $configStructure, $fieldsetFactory, $fieldFactory, $data);
+        parent::__construct(
+            $context,
+            $registry,
+            $formFactory,
+            $configFactory,
+            $configStructure,
+            $fieldsetFactory,
+            $fieldFactory,
+            $data
+        );
     }
 
     /**
@@ -70,8 +73,18 @@ class Form extends \Magento\Config\Block\System\Config\Form
         $fieldPrefix = '',
         $labelPrefix = ''
     ) {
+        // Set "default checkbox"
         $inherit = true;
+        $isUseDefault = $this->canUseDefaultValue($field->showInDefault());
         $data = $this->getSwatchTranslateData($path);
+
+        if (is_null($data)) {
+            // Use default value
+            $data = $this->getSwatchTranslateData($path, true);
+        } elseif ($data && !$data->isUseDefault()) {
+            // Value was defined by user
+            $inherit = false;
+        }
 
         $fieldRendererClass = $field->getFrontendModel();
         if ($fieldRendererClass) {
@@ -109,7 +122,7 @@ class Form extends \Magento\Config\Block\System\Config\Form
                 'scope' => $this->getScope(),
                 'scope_id' => $this->getScopeId(),
                 'scope_label' => $this->getScopeLabel($field),
-                'can_use_default_value' => false,//$this->canUseDefaultValue($field->showInDefault()),
+                'can_use_default_value' => $isUseDefault,
                 'can_use_website_value' => false,//$this->canUseWebsiteValue($field->showInWebsite()),
                 'can_restore_to_default' => $this->isCanRestoreToDefault($field->canRestore()),
                 'disabled' => $isReadOnly,
@@ -129,41 +142,24 @@ class Form extends \Magento\Config\Block\System\Config\Form
      * @param $path
      * @return mixed|null
      */
-    public function getSwatchTranslateData($path)
+    public function getSwatchTranslateData($path, $useDefault = false)
     {
         if (strpos($path, '/')) {
             $exploded = explode('/', $path);
             $section = $exploded[0];
             $group = $exploded[1];
             $string = $exploded[2];
-            $translates = $this->_fetchSectionData($section);
+            $translates = $this->translateRepository
+                ->fetchSectionData($this->getStoreCode(), $section, $group, $useDefault);
             if (!empty($translates) && !empty($string)) {
                 foreach ($translates as $translate) {
-                    if ($translate->getString() === $string) {
+                    if ($translate->getIdString() === $string) {
                         return $translate;
                     }
                 }
             }
         }
         return null;
-    }
-
-    /**
-     * Fetch data by section and store id (current)
-     * @param string $section
-     * @param string $subSection
-     * @return array
-     */
-    protected function _fetchSectionData($section, $subSection = 'labels')
-    {
-        if (!isset($this->sectionTranslate[$section])) {
-            $storeId = !empty($this->getStoreCode()) ? $this->getStoreCode() : 1;
-            $searchBuilder = $this->searchCriteriaBuilder->addFilter('store_id', $storeId)->addFilter('section', $section);
-            $searchCriteria = $searchBuilder->create();
-            $translates = $this->translateRepository->getList($searchCriteria)->getItems();
-            $this->sectionTranslate[$section] = $translates;
-        }
-        return $this->sectionTranslate[$section];
     }
 
 }
