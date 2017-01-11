@@ -149,14 +149,15 @@ class Save extends \Magento\Backend\App\Action
             }
 
             $definitionArray = $this->reader->read();
-            if (!isset($definitionArray['config']['system']['sections'][$section])) {
+            $definitionArray = $definitionArray['config']['system']['sections'];
+            if (!isset($definitionArray[$section])) {
                 $this->messageManager->addError(__("Section not found"));
                 return $resultRedirect->setPath('managecontent/index/index', [
                     'section' => $section,
                     'store' => $storeId
                 ]);
             }
-            $labelsDefined = $definitionArray['config']['system']['sections'][$section]['children']['labels']['children'];
+            $labelsDefined = $definitionArray[$section]['children']['labels']['children'];
 
             $items = [];
             $needUpdateExtend = false;

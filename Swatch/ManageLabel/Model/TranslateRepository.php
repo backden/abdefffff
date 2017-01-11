@@ -147,8 +147,8 @@ class TranslateRepository implements TranslateRepositoryInterface
                 // Find all label by section
                 $itemsNeedUpdate = $collection->getItemsByColumnValue(TranslateInterface::SECTION_NAME, $section);
                 foreach ($itemsNeedUpdate as $item) {
-                    if ($item->isUseDefault() && isset($items[$item->getString()])) {
-                        $defaultItem = $items[$item->getString()];
+                    if ($item->isUseDefault() && isset($items[$item->getIdString()])) {
+                        $defaultItem = $items[$item->getIdString()];
                         // Update translate text
                         $item->setTranslate($defaultItem->getTranslate());
                         $this->save($item);
