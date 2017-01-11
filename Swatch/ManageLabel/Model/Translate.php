@@ -140,7 +140,7 @@ class Translate extends \Magento\Framework\Model\AbstractModel implements Transl
      */
     public function setIdString($idString)
     {
-        $this->setData(self::ID_LABEL);
+        $this->setData(self::ID_LABEL, $idString);
         return $this;
     }
 

@@ -138,7 +138,7 @@ class Save extends \Magento\Backend\App\Action
             // Re-define data to label (string) is the key
             $sectionTranslated = [];
             foreach ($existingTranslate as $index => $translate) {
-                $sectionTranslated[$translate->getString()] = $translate;
+                $sectionTranslated[$translate->getIdString()] = $translate;
             }
             // Re-define default data to array
             $defaultTranslated = [];
@@ -163,7 +163,7 @@ class Save extends \Magento\Backend\App\Action
             $needUpdateExtend = false;
             foreach ($labels as $idLabel => $translate) {
                 $useDefault = 1;
-                $label = $labelsDefined[$idLabel];
+                $labelDefined = $labelsDefined[$idLabel];
                 if (isset($sectionTranslated[$idLabel])) {
                     // Get item for update
                     $item = $sectionTranslated[$idLabel];
@@ -173,8 +173,8 @@ class Save extends \Magento\Backend\App\Action
                 }
                 // Get default translate for label if 'inherit' is given
                 if (isset($translate['inherit']) && $translate['inherit'] == 1) {
-                    $translate['value'] = isset($defaultTranslated[$label]) ?
-                        $defaultTranslated[$label]->getTranslate() : '';
+                    $translate['value'] = isset($defaultTranslated[$idLabel]) ?
+                        $defaultTranslated[$idLabel]->getTranslate() : '';
                 } else {
                     // If store is default then set use_default is 0 as default
                     if ($storeId != 0) {
@@ -185,7 +185,7 @@ class Save extends \Magento\Backend\App\Action
                 }
                 $dataArr = [
                     TranslateInterface::ID_LABEL => $idLabel,
-                    TranslateInterface::STRING_LABEL => $label,
+                    TranslateInterface::STRING_LABEL => $labelDefined['label'],
                     TranslateInterface::TRANSLATE_LABEL => $translate['value'],
                     TranslateInterface::USE_DEFAULT => $useDefault
                 ];

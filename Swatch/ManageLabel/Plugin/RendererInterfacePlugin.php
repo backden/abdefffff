@@ -61,22 +61,22 @@ class RendererInterfacePlugin
         if ($text == 'labels') {
             $s = '';
         }
-        $defaultTranslates = $this->translateRepository->getListByStore(0);
-
-        if ($this->storeManagement->getWebsite()->getId() > 1) {
-            $currentStore = $this->storeManagement->getStore();
-            $translates = $this->translateRepository->getListByStore($currentStore->getId());
-            foreach ($translates as $translate) {
-                if ($translate->getString() === $text) {
-                    return $translate->getTranslate();
-                }
-            }
-        }
-        foreach ($defaultTranslates as $translate) {
-            if ($translate->getString() === $text) {
-                return $translate->getTranslate();
-            }
-        }
+//        $defaultTranslates = $this->translateRepository->getListByStore(0);
+//
+//        if ($this->storeManagement->getWebsite()->getId() > 1) {
+//            $currentStore = $this->storeManagement->getStore();
+//            $translates = $this->translateRepository->getListByStore($currentStore->getId());
+//            foreach ($translates as $translate) {
+//                if ($translate->getString() === $text) {
+//                    return $translate->getTranslate();
+//                }
+//            }
+//        }
+//        foreach ($defaultTranslates as $translate) {
+//            if ($translate->getString() === $text) {
+//                return $translate->getTranslate();
+//            }
+//        }
         $result = $process($source, $arguments);
         if ($result == 'Labels') {
             $s = '';
