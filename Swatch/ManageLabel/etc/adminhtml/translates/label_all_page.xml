@@ -1,49 +1,49 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
   <system>
-    <section id="all_pages" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+    <section id="all_pages" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
       <class>separator-top</class>
       <label>All pages</label>
       <tab>sections</tab>
       <resource>Swatch_ManageLabel::Translate</resource>
-      <group id="labels" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+      <group id="labels" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
         <label>Labels</label>
-        <field id="subscribe_to_our_website" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="subscribe_to_our_website" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Subscribe to our newsletter</label>
         </field>
-        <field id="input_default_value_newsletter" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="input_default_value_newsletter" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Input default value newsletter</label>
         </field>
-        <field id="input_confirm_default_value_eway" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="input_confirm_default_value_eway" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Input confirm default value eway</label>
         </field>
-        <field id="eway_success_page_title" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="eway_success_page_title" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Eway success page title</label>
         </field>
-        <field id="eway_success_page_content" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="eway_success_page_content" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Eway success page content</label>
         </field>
-        <field id="title" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="title" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Title</label>
         </field>
-        <field id="first_name_field_label" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="first_name_field_label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>First name field label</label>
         </field>
-        <field id="last_name_field_label" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="last_name_field_label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Last name field label</label>
         </field>
-        <field id="email_field_value" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="email_field_value" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Email field value</label>
         </field>
-        <field id="type_your_search" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="type_your_search" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>TYPE YOUR SEARCH</label>
         </field>
-        <field id="back_button" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="back_button" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Back button</label>
         </field>
-        <field id="validate" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="validate" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Validate</label>
         </field>
-        <field id="ttc_label" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="ttc_label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>TTC label</label>
         </field>
       </group>

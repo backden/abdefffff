@@ -105,13 +105,16 @@ class Form extends \Magento\Config\Block\System\Config\Form
         $sharedClass = $this->_getSharedCssClass($field);
         $requiresClass = $this->_getRequiresCssClass($field, $fieldPrefix);
 
+        // Get all data of field
+        $fielData = $field->getData();
+
         $isReadOnly = false;
         $formField = $fieldset->addField(
             $elementId,
             $field->getType(),
             [
                 'name' => $elementName,
-                'label' => $field->getLabel($labelPrefix),
+                'label' => $labelPrefix . " " . (isset($fielData['label']) ? $fielData['label'] : ''),
                 'comment' => $field->getComment($data),
                 'tooltip' => $field->getTooltip(),
                 'hint' => $field->getHint(),
@@ -150,7 +153,7 @@ class Form extends \Magento\Config\Block\System\Config\Form
             $group = $exploded[1];
             $string = $exploded[2];
             $translates = $this->translateRepository
-                ->fetchSectionData($this->getStoreCode(), $section, $group, $useDefault);
+                ->fetchSectionData($this->getStoreCode(), $section, $useDefault);
             if (!empty($translates) && !empty($string)) {
                 foreach ($translates as $translate) {
                     if ($translate->getIdString() === $string) {

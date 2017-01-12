@@ -13,6 +13,7 @@ namespace Swatch\ManageLabel\Model;
 
 use Magento\Framework\Api\Search\SearchResultInterfaceFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Swatch\ManageLabel\Api\Data\TranslateInterface;
 use Swatch\ManageLabel\Api\TranslateRepositoryInterface;
 use Swatch\ManageLabel\Api\Data\TranslateSearchResultsInterfaceFactory;
@@ -80,6 +81,10 @@ class TranslateRepository implements TranslateRepositoryInterface
      */
     protected $searchCriteriaBuilder;
 
+    /**
+     * @var ScopeConfigInterface $scopeConfig
+     */
+    protected $scopeConfig;
 
     /**
      * @param ResourceTranslate $resource
@@ -100,6 +105,7 @@ class TranslateRepository implements TranslateRepositoryInterface
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
         StoreManagerInterface $storeManager,
+        ScopeConfigInterface $scopeConfig,
         SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->resource = $resource;
@@ -110,6 +116,7 @@ class TranslateRepository implements TranslateRepositoryInterface
         $this->dataTranslateFactory = $dataTranslateFactory;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->storeManager = $storeManager;
+        $this->scopeConfig = $scopeConfig;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
@@ -133,16 +140,24 @@ class TranslateRepository implements TranslateRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function saveCollection(array $items, $needUpdateExtend = false)
+    public function saveMultiple(array $data)
+    {
+        $connection = $this->resource->getConnection();
+        if ($connection) {
+            $connection->insertOnDuplicate($this->resource->getMainTable(), $data);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveCollection(array $items, $section, $needUpdateExtend = false)
     {
         if (count($items) > 0) {
-            $section = "";
-            foreach ($items as $translate) {
-                $section = $translate->getSection();
-                $this->save($translate);
-            }
+            $this->saveMultiple($items);
             // Update for other section which has labels using value default
             if ($needUpdateExtend) {
+                $needUpdateItems = [];
                 $collection = $this->translateCollectionFactory->create();
                 // Find all label by section
                 $itemsNeedUpdate = $collection->getItemsByColumnValue(TranslateInterface::SECTION_NAME, $section);
@@ -150,9 +165,12 @@ class TranslateRepository implements TranslateRepositoryInterface
                     if ($item->isUseDefault() && isset($items[$item->getIdString()])) {
                         $defaultItem = $items[$item->getIdString()];
                         // Update translate text
-                        $item->setTranslate($defaultItem->getTranslate());
-                        $this->save($item);
+                        $item->setTranslate($defaultItem[TranslateInterface::TRANSLATE_LABEL]);
+                        $needUpdateItems[] = $item->getData();
                     }
+                }
+                if (count($needUpdateItems) > 0) {
+                    $this->saveMultiple($needUpdateItems);
                 }
             }
         }
@@ -243,7 +261,7 @@ class TranslateRepository implements TranslateRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function fetchSectionData($storeScope, $section, $group = 'labels', $useDefault = false)
+    public function fetchSectionData($storeScope, $section, $useDefault = false)
     {
         if (!isset($this->sectionTranslate[$section])) {
             $storeId = !empty($storeScope) ? $storeScope : 0;
@@ -262,13 +280,25 @@ class TranslateRepository implements TranslateRepositoryInterface
     }
 
     /**
-     * @param $storeId
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getListByStore(
         $storeId
     ) {
         $collection = $this->translateCollectionFactory->create();
         return $collection->getItemsByColumnValue(TranslateInterface::STORE_ID, $storeId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTranslationData($section, $storeId)
+    {
+        if (is_null($storeId)) {
+            // Use current store
+            $storeId = $this->storeManager->getStore()->getId();
+        }
+        $data = $this->resource->getTranslationArray(null, $storeId);
+        return $data;
     }
 }

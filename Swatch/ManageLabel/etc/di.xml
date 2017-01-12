@@ -4,7 +4,14 @@
 	<preference for="Swatch\ManageLabel\Api\Data\TranslateInterface" type="Swatch\ManageLabel\Model\Translate" />
 	<preference for="Swatch\ManageLabel\Api\Data\TranslateSearchResultsInterface" type="Swatch\ManageLabel\Model\TranslateSearchResults" />
 
-	<type name="Magento\Framework\Phrase\RendererInterface">
-		<plugin name="labelTranslatePlugin" type="Swatch\ManageLabel\Plugin\RendererInterfacePlugin" sortOrder="100"></plugin>
+	<type name="Magento\Translation\Model\ResourceModel\Translate">
+		<plugin name="labelTranslatePlugin" type="Swatch\ManageLabel\Plugin\TranslatePlugin" sortOrder="100"></plugin>
+	</type>
+	<type name="Swatch\ManageLabel\Model\ResourceModel\Translate">
+		<arguments>
+			<argument name="config" xsi:type="array">
+				<item name="sectionRollbackDefault" xsi:type="string">all_pages</item>
+			</argument>
+		</arguments>
 	</type>
 </config>

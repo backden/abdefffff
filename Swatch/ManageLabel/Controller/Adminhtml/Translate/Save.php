@@ -13,10 +13,11 @@ namespace Swatch\ManageLabel\Controller\Adminhtml\Translate;
 
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Swatch\ManageLabel\Api\Data\TranslateInterface;
 use Swatch\ManageLabel\Api\TranslateRepositoryInterface;
-use Swatch\ManageLabel\Model\Config\Structure\Reader;
+use Swatch\ManageLabel\Model\Config\Structure\Data;
 use Swatch\ManageLabel\Model\ResourceModel\Translate\Collection;
 use Swatch\ManageLabel\Model\ResourceModel\Translate\CollectionFactory;
 
@@ -51,9 +52,14 @@ class Save extends \Magento\Backend\App\Action
     protected $storeManager;
 
     /**
-     * @var Reader $reader
+     * @var Data $dataStructure
      */
-    protected $reader;
+    protected $dataStructure;
+
+    /**
+     * @var ScopeConfigInterface $scopeConfig
+     */
+    protected $scopeConfig;
 
     /**
      * Save constructor.
@@ -74,7 +80,8 @@ class Save extends \Magento\Backend\App\Action
         DataObjectHelper $dataObjectHelper,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        Reader $reader
+        Data $dataStructure,
+        ScopeConfigInterface $scopeConfig
     ) {
         $this->dataPersistor = $dataPersistor;
         $this->translateRepository = $translateRepository;
@@ -82,7 +89,8 @@ class Save extends \Magento\Backend\App\Action
         $this->dataObjectHelper = $dataObjectHelper;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->storeManager = $storeManager;
-        $this->reader = $reader;
+        $this->dataStructure = $dataStructure;
+        $this->scopeConfig = $scopeConfig;
         parent::__construct($context, $coreRegistry);
     }
 
@@ -108,8 +116,8 @@ class Save extends \Magento\Backend\App\Action
             $storeId = $group->getDefaultStoreId();
         }
         $configArr = [
-            'store_id' => $storeId,
-            'section' => $section
+            TranslateInterface::STORE_ID => $storeId,
+            TranslateInterface::SECTION_NAME => $section
         ];
 
         /**
@@ -123,42 +131,17 @@ class Save extends \Magento\Backend\App\Action
         unset($redirectParams['form_key']);
 
         if ($dataPost) {
-            // Search translated text in data by current store and section
-            $searchBuilder = $this->searchCriteriaBuilder
-                ->addFilter('store_id', $storeId)->addFilter('section', $section);
-            $searchCriteria = $searchBuilder->create();
-            $existingTranslate = $this->translateRepository->getList($searchCriteria);
-            $defaultTranslates = $this->translateRepository->fetchSectionData($storeId, $section, 'labels', true);
+            // Get existing and default translate
+            list($sectionTranslated, $defaultTranslated) = $this->getTranslation($storeId, $section);
+            // Get definition label
+            $labelsDefined = $this->getDefinitionLabels($section);
 
-            if ($existingTranslate->getTotalCount() > 0) {
-                $existingTranslate = $existingTranslate->getItems();
-            } else {
-                $existingTranslate = [];
-            }
-            // Re-define data to label (string) is the key
-            $sectionTranslated = [];
-            foreach ($existingTranslate as $index => $translate) {
-                $sectionTranslated[$translate->getIdString()] = $translate;
-            }
-            // Re-define default data to array
-            $defaultTranslated = [];
-            if ($defaultTranslates) {
-                foreach ($defaultTranslates as $index => $translate) {
-                    $defaultTranslated[$translate->getIdString()] = $translate;
-                }
-            }
-
-            $definitionArray = $this->reader->read();
-            $definitionArray = $definitionArray['config']['system']['sections'];
-            if (!isset($definitionArray[$section])) {
-                $this->messageManager->addError(__("Section not found"));
+            if (!$labelsDefined) {
                 return $resultRedirect->setPath('managecontent/index/index', [
                     'section' => $section,
                     'store' => $storeId
                 ]);
             }
-            $labelsDefined = $definitionArray[$section]['children']['labels']['children'];
-
             $items = [];
             $needUpdateExtend = false;
             foreach ($labels as $idLabel => $translate) {
@@ -191,11 +174,11 @@ class Save extends \Magento\Backend\App\Action
                 ];
                 $dataArr = array_merge($configArr, $dataArr);
                 $this->dataObjectHelper->populateWithArray($item, $dataArr, TranslateInterface::class);
-                $items[$item->getIdString()] = $item;
+                $items[$item->getIdString()] = $item->getData();
             }
 
             try {
-                $this->translateRepository->saveCollection($items, $needUpdateExtend);
+                $this->translateRepository->saveCollection($items, $section, $needUpdateExtend);
 
                 $this->messageManager->addSuccess(__('You saved successfully.'));
                 $this->dataPersistor->clear('swatch_managelabel_translate');
@@ -216,5 +199,57 @@ class Save extends \Magento\Backend\App\Action
             'section' => $section,
             'store' => $storeId
         ]);
+    }
+
+    /**
+     * Get Translate existing and default values
+     * @return array
+     */
+    protected function getTranslation($storeId, $section)
+    {
+        // Search translated text in data by current store and section
+        $searchBuilder = $this->searchCriteriaBuilder
+            ->addFilter('store_id', $storeId)->addFilter('section', $section);
+        $searchCriteria = $searchBuilder->create();
+        $existingTranslate = $this->translateRepository->getList($searchCriteria);
+        $defaultTranslates = $this->translateRepository->fetchSectionData($storeId, $section, 'labels', true);
+
+        if ($existingTranslate->getTotalCount() > 0) {
+            $existingTranslate = $existingTranslate->getItems();
+        } else {
+            $existingTranslate = [];
+        }
+        // Re-define data to label (string) is the key
+        $sectionTranslated = [];
+        foreach ($existingTranslate as $index => $translate) {
+            $sectionTranslated[$translate->getIdString()] = $translate;
+        }
+        // Re-define default data to array
+        $defaultTranslated = [];
+        if ($defaultTranslates) {
+            foreach ($defaultTranslates as $index => $translate) {
+                $defaultTranslated[$translate->getIdString()] = $translate;
+            }
+        }
+        return [
+            $sectionTranslated,
+            $defaultTranslated
+        ];
+    }
+
+    /**
+     * Get definition of manage labels
+     * @param string $section
+     * @return array|bool False if occur error
+     */
+    protected function getDefinitionLabels($section)
+    {
+        $definitionArray = $this->dataStructure->get();
+        $definitionArray = $definitionArray['sections'];
+        if (!isset($definitionArray[$section])) {
+            $this->messageManager->addError(__("Section not found"));
+            return false;
+        }
+        return $definitionArray[$section]['children']['labels']['children'];
     }
 }

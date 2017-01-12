@@ -11,9 +11,7 @@
 
 namespace Swatch\ManageLabel\Api;
 
-use Magento\Framework\Api\SearchCriteriaInterface;
 use Swatch\ManageLabel\Api\Data\TranslateInterface;
-use Swatch\ManageLabel\Model\ResourceModel\Translate\Collection;
 
 interface TranslateRepositoryInterface
 {
@@ -30,14 +28,22 @@ interface TranslateRepositoryInterface
         \Swatch\ManageLabel\Api\Data\TranslateInterface $translate
     );
 
+    /**
+     * Save or update multiple translate
+     * @param array $data Translate model as array key-value pairs
+     * @return void
+     */
+    public function saveMultiple(array $data);
 
     /**
      * Save multiple records from array
      * @param TranslateInterface[] $items
+     * @param string $items
      * @param bool $needUpdateExtend
      */
     public function saveCollection(
         array $items,
+        $section,
         $needUpdateExtend = false
     );
 
@@ -62,6 +68,7 @@ interface TranslateRepositoryInterface
     );
 
     /**
+     * Get all translation by store id
      * @param $storeId
      * @return mixed
      */
@@ -70,14 +77,21 @@ interface TranslateRepositoryInterface
     );
 
     /**
-     * Fetch data by section and store id (current)
-     * @param string $storeScope
+     * Fetch data by section and store id (current) - B
+     * @param string $storeScopeackend
      * @param string $section
-     * @param string $group Optional
      * @param bool $useDefault
      * @return array
      */
-    public function fetchSectionData($storeScope, $section, $group = 'labels', $useDefault = false);
+    public function fetchSectionData($storeScope, $section, $useDefault = false);
+
+    /**
+     * For frontend, get all translation by section / current store id
+     * @param string $section
+     * @param int $storeId
+     * @return array
+     */
+    public function getTranslationData($section, $storeId);
 
     /**
      * Delete Translate
