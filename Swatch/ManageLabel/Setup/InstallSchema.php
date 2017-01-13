@@ -34,7 +34,6 @@ class InstallSchema implements InstallSchemaInterface
 
         $table_swatch_translate = $setup->getConnection()->newTable($setup->getTable('swatch_translate'));
 
-
         $table_swatch_translate->addColumn(
             'id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -77,6 +76,12 @@ class InstallSchema implements InstallSchemaInterface
             1,
             array('nullable' => true),
             'Use Default Config'
+        )->addColumn(
+            'is_visible',
+            \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
+            1,
+            array('nullable' => true, 'default' => false),
+            'Visibility'
         );
 
         $setup->getConnection()->createTable($table_swatch_translate);

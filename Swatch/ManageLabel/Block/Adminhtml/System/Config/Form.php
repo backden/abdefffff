@@ -156,7 +156,7 @@ class Form extends \Magento\Config\Block\System\Config\Form
                 ->fetchSectionData($this->getStoreCode(), $section, $useDefault);
             if (!empty($translates) && !empty($string)) {
                 foreach ($translates as $translate) {
-                    if ($translate->getIdString() === $string) {
+                    if ($translate->getIdString() === $string && $translate->isVisible()) {
                         return $translate;
                     }
                 }

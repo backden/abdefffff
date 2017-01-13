@@ -14,6 +14,8 @@ namespace Swatch\ManageLabel\Model;
 use Magento\Framework\Api\Search\SearchResultInterfaceFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\EntityManager\EventManager;
+use Psr\Log\LoggerInterface;
 use Swatch\ManageLabel\Api\Data\TranslateInterface;
 use Swatch\ManageLabel\Api\TranslateRepositoryInterface;
 use Swatch\ManageLabel\Api\Data\TranslateSearchResultsInterfaceFactory;
@@ -87,6 +89,17 @@ class TranslateRepository implements TranslateRepositoryInterface
     protected $scopeConfig;
 
     /**
+     * @var EventManager $eventManager
+     */
+    protected $eventManager;
+
+    /**
+     * @var LoggerInterface $logger
+     */
+    protected $logger;
+
+    /**
+     * TranslateRepository constructor.
      * @param ResourceTranslate $resource
      * @param TranslateFactory $translateFactory
      * @param TranslateInterfaceFactory $dataTranslateFactory
@@ -95,6 +108,9 @@ class TranslateRepository implements TranslateRepositoryInterface
      * @param DataObjectHelper $dataObjectHelper
      * @param DataObjectProcessor $dataObjectProcessor
      * @param StoreManagerInterface $storeManager
+     * @param ScopeConfigInterface $scopeConfig
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param LoggerInterface $logger
      */
     public function __construct(
         ResourceTranslate $resource,
@@ -106,7 +122,9 @@ class TranslateRepository implements TranslateRepositoryInterface
         DataObjectProcessor $dataObjectProcessor,
         StoreManagerInterface $storeManager,
         ScopeConfigInterface $scopeConfig,
-        SearchCriteriaBuilder $searchCriteriaBuilder
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        EventManager $eventManager,
+        LoggerInterface $logger
     ) {
         $this->resource = $resource;
         $this->translateFactory = $translateFactory;
@@ -118,6 +136,8 @@ class TranslateRepository implements TranslateRepositoryInterface
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->eventManager = $eventManager;
+        $this->logger = $logger;
     }
 
     /**
@@ -162,16 +182,24 @@ class TranslateRepository implements TranslateRepositoryInterface
                 // Find all label by section
                 $itemsNeedUpdate = $collection->getItemsByColumnValue(TranslateInterface::SECTION_NAME, $section);
                 foreach ($itemsNeedUpdate as $item) {
-                    if ($item->isUseDefault() && isset($items[$item->getIdString()])) {
-                        $defaultItem = $items[$item->getIdString()];
-                        // Update translate text
-                        $item->setTranslate($defaultItem[TranslateInterface::TRANSLATE_LABEL]);
-                        $needUpdateItems[] = $item->getData();
+                    if ($item->getStoreId() !== 0) {
+                        if (isset($items[$item->getIdString()])) {
+                            $defaultItem = $items[$item->getIdString()];
+                            // Update translate text and visibility
+                            if ($item->isUseDefault()) {
+                                $item->setTranslate($defaultItem[TranslateInterface::TRANSLATE_LABEL]);
+                            }
+                            $item->setIsVisible($defaultItem[TranslateInterface::IS_VISIBLE]);
+                            $needUpdateItems[] = $item->getData();
+                        }
                     }
                 }
                 if (count($needUpdateItems) > 0) {
                     $this->saveMultiple($needUpdateItems);
                 }
+            }
+            if (!$this->_blockEvents) {
+                $this->eventManager->dispatch('labels_save_after', [$items]);
             }
         }
     }
@@ -263,20 +291,25 @@ class TranslateRepository implements TranslateRepositoryInterface
      */
     public function fetchSectionData($storeScope, $section, $useDefault = false)
     {
-        if (!isset($this->sectionTranslate[$section])) {
-            $storeId = !empty($storeScope) ? $storeScope : 0;
-            if ($useDefault) {
-                $storeId = 0;
-            }
+        $storeId = !empty($storeScope) ? $storeScope : 0;
+        if ($useDefault) {
+            $storeId = 0;
+        }
+        if (!isset($this->sectionTranslate[$storeId])) {
+            $this->sectionTranslate[$storeId] = [];
+        }
+        if (!isset($this->sectionTranslate[$storeId][$section])) {
             $searchBuilder = $this->searchCriteriaBuilder->addFilter('store_id', $storeId)
                 ->addFilter('section', $section);
             $searchCriteria = $searchBuilder->create();
             $translates = $this->getList($searchCriteria)->getItems();
             if (count($translates) > 0) {
-                $this->sectionTranslate[$section] = $translates;
+                $this->sectionTranslate[$storeId][$section] = $translates;
+            } else {
+                $this->sectionTranslate[$storeId][$section] = [];
             }
         }
-        return $this->sectionTranslate[$section];
+        return $this->sectionTranslate[$storeId][$section];
     }
 
     /**

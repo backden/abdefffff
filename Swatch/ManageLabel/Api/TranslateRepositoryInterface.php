@@ -12,6 +12,7 @@
 namespace Swatch\ManageLabel\Api;
 
 use Swatch\ManageLabel\Api\Data\TranslateInterface;
+use Swatch\ManageLabel\Webservice\V1\Production\TranslateWebApiInterface;
 
 interface TranslateRepositoryInterface
 {

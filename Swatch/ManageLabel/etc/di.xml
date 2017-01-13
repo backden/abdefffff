@@ -3,6 +3,7 @@
 	<preference for="Swatch\ManageLabel\Api\TranslateRepositoryInterface" type="Swatch\ManageLabel\Model\TranslateRepository" />
 	<preference for="Swatch\ManageLabel\Api\Data\TranslateInterface" type="Swatch\ManageLabel\Model\Translate" />
 	<preference for="Swatch\ManageLabel\Api\Data\TranslateSearchResultsInterface" type="Swatch\ManageLabel\Model\TranslateSearchResults" />
+	<preference for="Swatch\ManageLabel\Webservice\V1\Production\TranslateWebApiInterface" type="Swatch\ManageLabel\Webservice\V1\Production\TranslateWebApi" />
 
 	<type name="Magento\Translation\Model\ResourceModel\Translate">
 		<plugin name="labelTranslatePlugin" type="Swatch\ManageLabel\Plugin\TranslatePlugin" sortOrder="100"></plugin>

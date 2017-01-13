@@ -151,4 +151,22 @@ class Translate extends \Magento\Framework\Model\AbstractModel implements Transl
     {
         return $this->getData(self::ID_LABEL);
     }
+
+    /**
+     * @param bool $visible
+     * @return mixed
+     */
+    public function setIsVisible($visible)
+    {
+        $this->setData(self::IS_VISIBLE, $visible);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return $this->getData(self::IS_VISIBLE);
+    }
 }

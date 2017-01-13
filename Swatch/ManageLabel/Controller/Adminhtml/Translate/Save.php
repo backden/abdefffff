@@ -116,8 +116,14 @@ class Save extends \Magento\Backend\App\Action
             $storeId = $group->getDefaultStoreId();
         }
         $configArr = [
+            TranslateInterface::TRANSLATE_ID => null,
             TranslateInterface::STORE_ID => $storeId,
-            TranslateInterface::SECTION_NAME => $section
+            TranslateInterface::SECTION_NAME => $section,
+            TranslateInterface::ID_LABEL => null,
+            TranslateInterface::STRING_LABEL => null,
+            TranslateInterface::TRANSLATE_LABEL => null,
+            TranslateInterface::USE_DEFAULT => null,
+            TranslateInterface::IS_VISIBLE => true
         ];
 
         /**
@@ -137,7 +143,7 @@ class Save extends \Magento\Backend\App\Action
             $labelsDefined = $this->getDefinitionLabels($section);
 
             if (!$labelsDefined) {
-                return $resultRedirect->setPath('managecontent/index/index', [
+                return $resultRedirect->setPath('managelabels/index/index', [
                     'section' => $section,
                     'store' => $storeId
                 ]);
@@ -167,6 +173,7 @@ class Save extends \Magento\Backend\App\Action
                     }
                 }
                 $dataArr = [
+                    TranslateInterface::TRANSLATE_ID => $item->getId(),
                     TranslateInterface::ID_LABEL => $idLabel,
                     TranslateInterface::STRING_LABEL => $labelDefined['label'],
                     TranslateInterface::TRANSLATE_LABEL => $translate['value'],
@@ -176,26 +183,28 @@ class Save extends \Magento\Backend\App\Action
                 $this->dataObjectHelper->populateWithArray($item, $dataArr, TranslateInterface::class);
                 $items[$item->getIdString()] = $item->getData();
             }
+            // Adding items no longer available
+            $items = $this->mergeNotAvailableLabels($items, $sectionTranslated);
 
             try {
                 $this->translateRepository->saveCollection($items, $section, $needUpdateExtend);
 
-                $this->messageManager->addSuccess(__('You saved successfully.'));
+                $this->messageManager->addSuccessMessage(__('You saved successfully.'));
                 $this->dataPersistor->clear('swatch_managelabel_translate');
 
-                return $resultRedirect->setPath('managecontent/index/index', [
+                return $resultRedirect->setPath('managelabels/index/index', [
                     'section' => $section,
                     'store' => $storeId
                 ]);
             } catch (LocalizedException $e) {
-                $this->messageManager->addError($e->getMessage());
+                $this->messageManager->addErrorMessage($e->getMessage());
             } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the data.'));
+                $this->messageManager->addExceptionMessage($e, __('Something went wrong while saving the data.'));
             }
 
             $this->dataPersistor->set('swatch_managelabel_translate', $dataPost);
         }
-        return $resultRedirect->setPath('managecontent/index/index', [
+        return $resultRedirect->setPath('managelabels/index/index', [
             'section' => $section,
             'store' => $storeId
         ]);
@@ -247,9 +256,30 @@ class Save extends \Magento\Backend\App\Action
         $definitionArray = $this->dataStructure->get();
         $definitionArray = $definitionArray['sections'];
         if (!isset($definitionArray[$section])) {
-            $this->messageManager->addError(__("Section not found"));
+            $this->messageManager->addErrorMessage(__("Section not found"));
             return false;
         }
         return $definitionArray[$section]['children']['labels']['children'];
+    }
+
+    /**
+     * Items no longer available that will be invisible
+     * @param [] $items
+     * @param [] $sectionTranslated
+     * @return array
+     */
+    protected function mergeNotAvailableLabels($items, $sectionTranslated)
+    {
+        // Items no longer available that will be invisible
+        foreach ($sectionTranslated as $translate) {
+            $idLabel = $translate->getIdString();
+            if (!isset($items[$idLabel])) {
+                $data = $translate->getData();
+                // Set invisible to item
+                $data[TranslateInterface::IS_VISIBLE] = false;
+                $items[$idLabel] = $data;
+            }
+        }
+        return $items;
     }
 }

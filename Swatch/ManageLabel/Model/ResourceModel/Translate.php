@@ -74,9 +74,10 @@ class Translate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      *
      * @param int $section
      * @param int $storeId
+     * @param bool $isVisible
      * @return array
      */
-    public function getTranslation($section, $storeId)
+    public function getTranslation($section, $storeId, $isVisible = true)
     {
         if ($storeId === null) {
             $storeId = static::STORE_DEFAULT_CONFIG;
@@ -91,10 +92,12 @@ class Translate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                 ])
                 ->where('store_id = :store_id')
                 ->where('section <> :sectionDefault')
+                ->where('is_visible = :isVisible')
                 ->order('store_id');
             $bind = [
                 ':store_id' => $storeId,
-                ':sectionDefault' => $this->sectionDefault
+                ':sectionDefault' => $this->sectionDefault,
+                ':isVisible' => $isVisible
             ];
             if (!is_null($section)) {
                 $select->where('section = :section');
@@ -114,10 +117,11 @@ class Translate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      * Note: Other section will be ignore
      * Auto get default value if no result
      *
-     * @param null $storeId
+     * @param int $storeId
+     * @param bool $isVisible
      * @return array
      */
-    public function getRollbackTranslateData($storeId = null)
+    public function getRollbackTranslateData($storeId = null, $isVisible = true)
     {
         if ($storeId === null) {
             $storeId = static::STORE_DEFAULT_CONFIG;
@@ -132,10 +136,12 @@ class Translate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                 ])
                 ->where('store_id = :store_id')
                 ->where('section = :section')
+                ->where('is_visible = :isVisible')
                 ->order('store_id');
             $bind = [
                 ':store_id' => $storeId,
-                ':section' => $this->sectionDefault
+                ':section' => $this->sectionDefault,
+                ':isVisible' => $isVisible
             ];
             $data = $connection->fetchPairs($select, $bind);
             // If current store has no records then use default
