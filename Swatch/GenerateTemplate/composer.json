@@ -1,0 +1,21 @@
+{
+    "name": "swatch/module-generatetemplate",
+    "description": "Generate Templates",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "Mage2Gen",
+            "email": "info@mage2gen.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Swatch\\GenerateTemplate\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}

@@ -76,12 +76,6 @@ class InstallSchema implements InstallSchemaInterface
             1,
             array('nullable' => true),
             'Use Default Config'
-        )->addColumn(
-            'is_visible',
-            \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
-            1,
-            array('nullable' => true, 'default' => false),
-            'Visibility'
         );
 
         $setup->getConnection()->createTable($table_swatch_translate);

@@ -12,7 +12,6 @@
 namespace Swatch\ManageLabel\Api;
 
 use Swatch\ManageLabel\Api\Data\TranslateInterface;
-use Swatch\ManageLabel\Webservice\V1\Production\TranslateWebApiInterface;
 
 interface TranslateRepositoryInterface
 {
@@ -47,6 +46,32 @@ interface TranslateRepositoryInterface
         $section,
         $needUpdateExtend = false
     );
+
+    /**
+     * Delete multiple rows
+     * @param array $data
+     * @return mixed
+     */
+    public function deleteMultiple(array $data);
+
+    /**
+     * Delete from array
+     * @param array $items
+     * @param $section
+     * @param bool $needUpdateExtend
+     * @return mixed
+     */
+    public function deleteCollection(array $items, $section, $needUpdateExtend = false);
+
+    /**
+     * Save and delete
+     * @param array $items
+     * @param array $itemsDeleted
+     * @param $section
+     * @param bool $needUpdateExtend
+     * @return mixed
+     */
+    public function saveAndDeleteCollection(array $items, array $itemsDeleted, $section, $needUpdateExtend = false);
 
     /**
      * Retrieve Translate
@@ -114,4 +139,11 @@ interface TranslateRepositoryInterface
      */
 
     public function deleteById($translateId);
+
+    /**
+     * Block events staging while save or not
+     * @param bool $block
+     * @return mixed
+     */
+    public function setBlockEvent($block);
 }

@@ -64,7 +64,6 @@ class Save extends \Magento\Backend\App\Action
     /**
      * Save constructor.
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
      * @param \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor
      * @param TranslateRepositoryInterface $translateRepository
      * @param CollectionFactory $collectionFactory
@@ -73,7 +72,6 @@ class Save extends \Magento\Backend\App\Action
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
         \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor,
         TranslateRepositoryInterface $translateRepository,
         CollectionFactory $collectionFactory,
@@ -91,7 +89,7 @@ class Save extends \Magento\Backend\App\Action
         $this->storeManager = $storeManager;
         $this->dataStructure = $dataStructure;
         $this->scopeConfig = $scopeConfig;
-        parent::__construct($context, $coreRegistry);
+        parent::__construct($context);
     }
 
     /**
@@ -123,7 +121,6 @@ class Save extends \Magento\Backend\App\Action
             TranslateInterface::STRING_LABEL => null,
             TranslateInterface::TRANSLATE_LABEL => null,
             TranslateInterface::USE_DEFAULT => null,
-            TranslateInterface::IS_VISIBLE => true
         ];
 
         /**
@@ -151,11 +148,14 @@ class Save extends \Magento\Backend\App\Action
             $items = [];
             $needUpdateExtend = false;
             foreach ($labels as $idLabel => $translate) {
+                $oldLabelHash = "";
                 $useDefault = 1;
                 $labelDefined = $labelsDefined[$idLabel];
                 if (isset($sectionTranslated[$idLabel])) {
                     // Get item for update
                     $item = $sectionTranslated[$idLabel];
+                    $oldLabelHash = md5($item->getTranslate());
+                    unset($sectionTranslated[$idLabel]);
                 } else {
                     // New if any
                     $item = $collection->getNewEmptyItem();
@@ -172,22 +172,26 @@ class Save extends \Magento\Backend\App\Action
                         $needUpdateExtend = true;
                     }
                 }
-                $dataArr = [
-                    TranslateInterface::TRANSLATE_ID => $item->getId(),
-                    TranslateInterface::ID_LABEL => $idLabel,
-                    TranslateInterface::STRING_LABEL => $labelDefined['label'],
-                    TranslateInterface::TRANSLATE_LABEL => $translate['value'],
-                    TranslateInterface::USE_DEFAULT => $useDefault
-                ];
-                $dataArr = array_merge($configArr, $dataArr);
-                $this->dataObjectHelper->populateWithArray($item, $dataArr, TranslateInterface::class);
-                $items[$item->getIdString()] = $item->getData();
+                $newLabelHash = md5($translate['value']);
+                // Checking modify of translate to avoid update label was not modified
+                if ($oldLabelHash !== $newLabelHash) {
+                    $dataArr = [
+                        TranslateInterface::TRANSLATE_ID => $item->getId(),
+                        TranslateInterface::ID_LABEL => $idLabel,
+                        TranslateInterface::STRING_LABEL => $labelDefined['label'],
+                        TranslateInterface::TRANSLATE_LABEL => $translate['value'],
+                        TranslateInterface::USE_DEFAULT => $useDefault
+                    ];
+                    $dataArr = array_merge($configArr, $dataArr);
+                    $this->dataObjectHelper->populateWithArray($item, $dataArr, TranslateInterface::class);
+                    $items[$item->getIdString()] = $item->getData();
+                }
             }
             // Adding items no longer available
-            $items = $this->mergeNotAvailableLabels($items, $sectionTranslated);
+            $itemsDeleted = $this->mergeNotAvailableLabels($items, $sectionTranslated);
 
             try {
-                $this->translateRepository->saveCollection($items, $section, $needUpdateExtend);
+                $this->translateRepository->saveAndDeleteCollection($items, $itemsDeleted, $section, $needUpdateExtend);
 
                 $this->messageManager->addSuccessMessage(__('You saved successfully.'));
                 $this->dataPersistor->clear('swatch_managelabel_translate');
@@ -263,23 +267,22 @@ class Save extends \Magento\Backend\App\Action
     }
 
     /**
-     * Items no longer available that will be invisible
+     * Items no longer available that will be removed
      * @param [] $items
      * @param [] $sectionTranslated
-     * @return array
+     * @return array Items need remove
      */
     protected function mergeNotAvailableLabels($items, $sectionTranslated)
     {
-        // Items no longer available that will be invisible
+        $itemsDelete = [];
+        // Items no longer available that will be removed
         foreach ($sectionTranslated as $translate) {
             $idLabel = $translate->getIdString();
             if (!isset($items[$idLabel])) {
                 $data = $translate->getData();
-                // Set invisible to item
-                $data[TranslateInterface::IS_VISIBLE] = false;
-                $items[$idLabel] = $data;
+                $itemsDelete[$idLabel] = $data;
             }
         }
-        return $items;
+        return $itemsDelete;
     }
 }

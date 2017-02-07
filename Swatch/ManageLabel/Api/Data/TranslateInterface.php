@@ -21,7 +21,6 @@ interface TranslateInterface
     const STRING_LABEL = 'string';
     const TRANSLATE_LABEL = 'translate';
     const USE_DEFAULT = 'use_default';
-    const IS_VISIBLE = 'is_visible';
 
     const USE_DEFAULT_ENABLE = 1;
 
@@ -107,14 +106,4 @@ interface TranslateInterface
 
     public function getIdString();
 
-    /**
-     * @param bool $visible
-     * @return mixed
-     */
-    public function setIsVisible($visible);
-
-    /**
-     * @return bool
-     */
-    public function isVisible();
 }

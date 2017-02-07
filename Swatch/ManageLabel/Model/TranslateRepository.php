@@ -99,6 +99,11 @@ class TranslateRepository implements TranslateRepositoryInterface
     protected $logger;
 
     /**
+     * @var bool $_blockEvents
+     */
+    protected $_blockEvents = false;
+
+    /**
      * TranslateRepository constructor.
      * @param ResourceTranslate $resource
      * @param TranslateFactory $translateFactory
@@ -174,6 +179,7 @@ class TranslateRepository implements TranslateRepositoryInterface
     public function saveCollection(array $items, $section, $needUpdateExtend = false)
     {
         if (count($items) > 0) {
+            $this->resource->beginTransaction();
             $this->saveMultiple($items);
             // Update for other section which has labels using value default
             if ($needUpdateExtend) {
@@ -189,7 +195,6 @@ class TranslateRepository implements TranslateRepositoryInterface
                             if ($item->isUseDefault()) {
                                 $item->setTranslate($defaultItem[TranslateInterface::TRANSLATE_LABEL]);
                             }
-                            $item->setIsVisible($defaultItem[TranslateInterface::IS_VISIBLE]);
                             $needUpdateItems[] = $item->getData();
                         }
                     }
@@ -199,9 +204,76 @@ class TranslateRepository implements TranslateRepositoryInterface
                 }
             }
             if (!$this->_blockEvents) {
-                $this->eventManager->dispatch('labels_save_after', [$items]);
+                // Staging event
+                $this->eventManager->dispatch('labels_save_after', $items);
             }
+            $this->resource->commit();
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteMultiple(array $data)
+    {
+        $connection = $this->resource->getConnection();
+        if ($connection) {
+            $ids = [];
+            foreach ($data as $item) {
+                $ids[] = $item[TranslateInterface::TRANSLATE_ID];
+            }
+            $connection->delete($this->resource->getMainTable(), [
+                'id in (' . implode(',', $ids) . ')'
+            ]);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteCollection(array $items, $section, $needUpdateExtend = false)
+    {
+        if (count($items) > 0) {
+            $this->resource->beginTransaction();
+            $this->deleteMultiple($items);
+            // Update for other section which has labels using value default
+            if ($needUpdateExtend) {
+                $needUpdateItems = [];
+                $collection = $this->translateCollectionFactory->create();
+                // Find all label by section
+                $itemsNeedUpdate = $collection->getItemsByColumnValue(TranslateInterface::SECTION_NAME, $section);
+                foreach ($itemsNeedUpdate as $item) {
+                    if ($item->getStoreId() !== 0) {
+                        if (isset($items[$item->getIdString()])) {
+                            $needUpdateItems[] = $item->getData();
+                        }
+                    }
+                }
+                if (count($needUpdateItems) > 0) {
+                    $this->deleteMultiple($needUpdateItems);
+                }
+            }
+            if (!$this->_blockEvents) {
+                // Staging event
+                $this->eventManager->dispatch('labels_delete_commit_after', $items);
+            }
+            $this->resource->commit();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveAndDeleteCollection(
+        array $items,
+        array $itemsDeleted,
+        $section,
+        $needUpdateExtend = false
+    ) {
+        $this->resource->beginTransaction();
+        $this->saveCollection($items, $section, $needUpdateExtend);
+        $this->deleteCollection($itemsDeleted, $section, $needUpdateExtend);
+        $this->resource->commit();
     }
 
     /**
@@ -333,5 +405,14 @@ class TranslateRepository implements TranslateRepositoryInterface
         }
         $data = $this->resource->getTranslationArray(null, $storeId);
         return $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setBlockEvent($block)
+    {
+        $this->_blockEvents = $block;
+        return $this;
     }
 }

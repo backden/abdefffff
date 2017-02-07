@@ -74,10 +74,9 @@ class Translate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      *
      * @param int $section
      * @param int $storeId
-     * @param bool $isVisible
      * @return array
      */
-    public function getTranslation($section, $storeId, $isVisible = true)
+    public function getTranslation($section, $storeId)
     {
         if ($storeId === null) {
             $storeId = static::STORE_DEFAULT_CONFIG;
@@ -90,24 +89,18 @@ class Translate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     TranslateInterface::STRING_LABEL,
                     TranslateInterface::TRANSLATE_LABEL,
                 ])
-                ->where('store_id = :store_id')
+                ->where('store_id in (0, :store_id)')
                 ->where('section <> :sectionDefault')
-                ->where('is_visible = :isVisible')
                 ->order('store_id');
             $bind = [
                 ':store_id' => $storeId,
                 ':sectionDefault' => $this->sectionDefault,
-                ':isVisible' => $isVisible
             ];
             if (!is_null($section)) {
                 $select->where('section = :section');
                 $bind[':section'] = $section;
             }
             $data = $connection->fetchPairs($select, $bind);
-            // If current store has no records then use default
-            if ($storeId !== static::STORE_DEFAULT_CONFIG && count($data) === 0) {
-                $data = $this->getTranslation($section, static::STORE_DEFAULT_CONFIG);
-            }
         }
         return $data;
     }
@@ -118,10 +111,9 @@ class Translate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      * Auto get default value if no result
      *
      * @param int $storeId
-     * @param bool $isVisible
      * @return array
      */
-    public function getRollbackTranslateData($storeId = null, $isVisible = true)
+    public function getRollbackTranslateData($storeId = null)
     {
         if ($storeId === null) {
             $storeId = static::STORE_DEFAULT_CONFIG;
@@ -134,20 +126,14 @@ class Translate extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     TranslateInterface::STRING_LABEL,
                     TranslateInterface::TRANSLATE_LABEL,
                 ])
-                ->where('store_id = :store_id')
+                ->where('store_id in (0, :store_id)')
                 ->where('section = :section')
-                ->where('is_visible = :isVisible')
                 ->order('store_id');
             $bind = [
                 ':store_id' => $storeId,
                 ':section' => $this->sectionDefault,
-                ':isVisible' => $isVisible
             ];
             $data = $connection->fetchPairs($select, $bind);
-            // If current store has no records then use default
-            if ($storeId !== static::STORE_DEFAULT_CONFIG && count($data) === 0) {
-                $data = $this->getRollbackTranslateData(static::STORE_DEFAULT_CONFIG);
-            }
         }
         return $data;
     }

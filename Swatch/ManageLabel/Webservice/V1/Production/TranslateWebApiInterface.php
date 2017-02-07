@@ -8,6 +8,8 @@
 
 namespace Swatch\ManageLabel\Webservice\V1\Production;
 
+use Swatch\Staging\Api\Data\ApproveListInterface;
+
 /**
  * Class TranslateInterface
  * @package Swatch\ManageLabel\Webservice\V1
@@ -24,13 +26,18 @@ interface TranslateWebApiInterface
     const RESPONSE_ERROR_OBJECT = 50002;
     const RESPONSE_ERROR_UNKNOWN_FIELD = 50003;
 
+    const ENTITY_TYPE = 'labels';
+    const ACTION_TYPE_CREATE = 'create';
+    const ACTION_TYPE_UPDATE = 'update';
+    const ACTION_TYPE_DELETE = 'delete';
+
     /**
      * Webservice
      * Extract and process content request
      * @api
      * @param \Swatch\ManageLabel\Api\Data\TranslateInterface $translate
-     * @return mixed
+     * @return string
      */
-    public function executeProductionWebService(\Swatch\ManageLabel\Api\Data\TranslateInterface $translate);
+    public function executeProductionWebService(ApproveListInterface $approvedData);
 
 }
